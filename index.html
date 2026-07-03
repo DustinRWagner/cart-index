@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cart Index — Folsom's Weekly Grocery Price Index</title>
+<meta name="description" content="A hyperlocal grocery price index for Folsom, CA. The same 14-item basket, priced every Monday from each retailer's published store prices, across four Folsom stores.">
+<meta property="og:title" content="The Cart Index — Folsom's weekly grocery price index">
+<meta property="og:description" content="What does the same cart of groceries cost at Walmart, Target, Safeway, and Bel Air in Folsom this week? Measured every Monday, published open.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Libre+Franklin:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#141414;
+    --paper:#ffffff;
+    --receipt:#fbf8ef;
+    --yellow:#ffd23f;
+    --yellow-deep:#c79a00;
+    --red:#d7263d;
+    --green:#1e7a4a;
+    --gray:#6b675e;
+    --rule:2px solid var(--ink);
+    --font-display:'Anton', 'Arial Narrow', sans-serif;
+    --font-body:'Libre Franklin', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono:'IBM Plex Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--ink);}
+  :focus-visible{outline:3px dashed var(--red); outline-offset:3px;}
+  .wrap{max-width:1160px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    border-bottom:var(--rule);
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .masthead .wrap{display:flex; justify-content:space-between; align-items:center; padding-top:10px; padding-bottom:10px; gap:16px; flex-wrap:wrap;}
+  .masthead a{text-decoration:none; border-bottom:2px solid var(--yellow);}
+  .masthead a:hover{background:var(--yellow);}
+
+  /* ---------- hero ---------- */
+  .hero{border-bottom:var(--rule); overflow:hidden;}
+  .hero .wrap{
+    display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+    gap:48px; align-items:center; padding-top:56px; padding-bottom:64px;
+  }
+  .eyebrow{
+    display:inline-block; font-family:var(--font-mono); font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase;
+    background:var(--yellow); padding:4px 10px; border:2px solid var(--ink);
+    box-shadow:4px 4px 0 var(--ink); margin-bottom:22px;
+  }
+  h1.title{
+    font-family:var(--font-display); font-weight:400;
+    font-size:clamp(56px, 8.5vw, 108px); line-height:.95;
+    text-transform:uppercase; letter-spacing:.005em;
+  }
+  .dek{max-width:52ch; margin-top:18px; font-size:17px; color:#33312c;}
+  .dek strong{font-weight:800;}
+  .hero-number{display:flex; align-items:flex-end; gap:20px; margin-top:34px; flex-wrap:wrap;}
+  .index-price{
+    font-family:var(--font-display); line-height:.85; position:relative;
+    padding:6px 10px 2px 4px;
+  }
+  .index-price .whole{font-size:clamp(84px,10vw,132px);}
+  .index-price .cents{font-size:.42em; vertical-align:top; position:relative; top:.13em;}
+  .index-price::after{
+    content:""; position:absolute; left:0; right:0; bottom:6px; height:34%;
+    background:var(--yellow); z-index:-1;
+  }
+  .hero-meta{padding-bottom:14px;}
+  .chip{
+    display:inline-block; font-family:var(--font-mono); font-weight:600; font-size:15px;
+    padding:5px 12px; border:2px solid var(--ink); background:var(--paper);
+  }
+  .chip.up{background:var(--red); color:#fff; border-color:var(--red);}
+  .chip.down{background:var(--green); color:#fff; border-color:var(--green);}
+  .hero-meta .base-note{display:block; margin-top:10px; font-family:var(--font-mono); font-size:12px; color:var(--gray);}
+  .sample-badge{
+    display:none; margin-top:14px; font-family:var(--font-mono); font-size:12px;
+    background:#fff; border:2px dashed var(--red); color:var(--red); padding:6px 10px; max-width:44ch;
+  }
+  body.sample .sample-badge{display:inline-block;}
+
+  /* ---------- receipt (signature) ---------- */
+  .receipt-slot{display:flex; justify-content:center;}
+  .receipt{
+    width:min(340px,100%); background:var(--receipt); color:var(--ink);
+    font-family:var(--font-mono); font-size:13px; line-height:1.65;
+    padding:26px 22px 34px; transform:rotate(1.6deg);
+    box-shadow:10px 14px 0 rgba(20,20,20,.16);
+    position:relative;
+    background-image:repeating-linear-gradient(0deg, rgba(20,20,20,.022) 0 1px, transparent 1px 3px);
+  }
+  .receipt::after{
+    content:""; position:absolute; left:0; right:0; bottom:-12px; height:12px;
+    background:
+      linear-gradient(-45deg, transparent 8px, var(--receipt) 0) 0 0/16px 16px repeat-x,
+      linear-gradient(45deg, transparent 8px, var(--receipt) 0) 8px 0/16px 16px repeat-x;
+  }
+  .receipt::before{
+    content:""; position:absolute; left:0; right:0; top:-12px; height:12px;
+    background:
+      linear-gradient(-135deg, transparent 8px, var(--receipt) 0) 0 0/16px 16px repeat-x,
+      linear-gradient(135deg, transparent 8px, var(--receipt) 0) 8px 0/16px 16px repeat-x;
+  }
+  .receipt h2{font-size:16px; font-weight:600; text-align:center; letter-spacing:.14em;}
+  .receipt .sub{text-align:center; font-size:11px; letter-spacing:.08em; color:#45423a;}
+  .receipt hr{border:none; border-top:1.5px dashed #9a958a; margin:12px 0;}
+  .receipt .line{display:flex; justify-content:space-between; gap:10px;}
+  .receipt .line span:last-child{font-weight:600; white-space:nowrap;}
+  .receipt .big{font-size:19px; font-weight:600;}
+  .receipt .save{background:var(--yellow); margin:10px -6px; padding:8px 6px; border:1.5px solid var(--ink);}
+  .receipt .save .line span:last-child{font-size:16px;}
+  .receipt .barcode{
+    height:44px; margin:16px auto 6px; width:82%;
+    background:repeating-linear-gradient(90deg,
+      var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 7px, transparent 7px 9px,
+      var(--ink) 9px 10px, transparent 10px 14px, var(--ink) 14px 18px, transparent 18px 20px);
+  }
+  .receipt .thanks{text-align:center; font-size:11px; letter-spacing:.18em;}
+
+  /* ---------- ticker ---------- */
+  .ticker{
+    background:var(--ink); color:var(--yellow); overflow:hidden;
+    border-bottom:var(--rule); font-family:var(--font-mono); font-size:13px;
+  }
+  .ticker-track{display:flex; width:max-content; padding:9px 0; animation:tick 46s linear infinite; gap:0;}
+  .ticker-track span{padding:0 26px; white-space:nowrap;}
+  .ticker-track .up{color:#ff8c9a;}
+  .ticker-track .down{color:#7fd4a5;}
+  @keyframes tick{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+
+  /* ---------- sections ---------- */
+  section{border-bottom:var(--rule); padding:64px 0;}
+  .kicker{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--gray); margin-bottom:10px;
+  }
+  h2.sec{
+    font-family:var(--font-display); font-weight:400; text-transform:uppercase;
+    font-size:clamp(32px,4.4vw,52px); line-height:1; margin-bottom:14px;
+  }
+  .sec-dek{max-width:62ch; color:#33312c; margin-bottom:36px;}
+
+  /* stats strip */
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); border:var(--rule); margin-bottom:40px;}
+  .stat{padding:18px 20px; border-right:var(--rule);}
+  .stat:last-child{border-right:none;}
+  .stat b{display:block; font-family:var(--font-display); font-weight:400; font-size:40px; line-height:1;}
+  .stat span{font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gray);}
+
+  /* chart */
+  .chart-controls{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;}
+  .tag-btn{
+    font-family:var(--font-mono); font-size:13px; font-weight:600; cursor:pointer;
+    padding:7px 14px; border:2px solid var(--ink); background:var(--paper);
+    box-shadow:3px 3px 0 var(--ink); transition:transform .06s ease;
+  }
+  .tag-btn[aria-pressed="true"]{background:var(--yellow); box-shadow:1px 1px 0 var(--ink); transform:translate(2px,2px);}
+  .tag-btn:hover{background:var(--yellow);}
+  .chart-box{border:var(--rule); padding:22px; background:#fff;}
+  .chart-box canvas{width:100% !important; max-height:420px;}
+
+  /* carts */
+  .cart-bars{display:grid; gap:18px; margin-bottom:44px;}
+  .cart-row{display:grid; grid-template-columns:210px 1fr 110px; align-items:center; gap:16px;}
+  .cart-row .store{font-weight:800; font-size:15px;}
+  .cart-row .store small{display:block; font-weight:400; font-family:var(--font-mono); font-size:11px; color:var(--gray); text-transform:uppercase; letter-spacing:.08em;}
+  .bar-track{border:var(--rule); height:46px; background:#fff; position:relative;}
+  .bar-fill{height:100%; background:repeating-linear-gradient(-45deg, var(--yellow) 0 12px, #ffdc63 12px 24px); border-right:var(--rule); min-width:2%; transition:width .7s ease;}
+  .cart-row.cheapest .bar-fill{background:repeating-linear-gradient(-45deg, var(--green) 0 12px, #2b8d5b 12px 24px);}
+  .cart-row .total{font-family:var(--font-display); font-size:30px; text-align:right;}
+  .cheapest-flag{
+    display:inline-block; font-family:var(--font-mono); font-size:10px; letter-spacing:.1em;
+    background:var(--green); color:#fff; padding:2px 7px; margin-left:8px; vertical-align:middle;
+  }
+
+  /* calculator */
+  .calc{border:var(--rule); background:var(--yellow); padding:30px; box-shadow:8px 8px 0 var(--ink);}
+  .calc h3{font-family:var(--font-display); font-weight:400; text-transform:uppercase; font-size:26px; margin-bottom:6px;}
+  .calc p.small{font-size:14px; margin-bottom:18px; max-width:60ch;}
+  .calc-row{display:grid; grid-template-columns:minmax(220px,1fr) auto; gap:28px; align-items:center;}
+  .calc label{font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:8px;}
+  input[type=range]{width:100%; accent-color:var(--ink); height:32px;}
+  .calc-out{font-size:16px; max-width:46ch;}
+  .calc-out b{font-family:var(--font-display); font-weight:400; font-size:44px; display:block; line-height:1;}
+  .calc-out .sub-save{font-family:var(--font-mono); font-size:13px;}
+
+  /* shelf tags */
+  .shelf{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:20px;}
+  .tag-card{border:var(--rule); background:#fff; box-shadow:5px 5px 0 var(--ink);}
+  .tag-card .cat{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    background:var(--yellow); border-bottom:var(--rule); padding:5px 12px;
+    display:flex; justify-content:space-between;
+  }
+  .tag-card .body{padding:14px 14px 16px;}
+  .tag-card .item{font-weight:800; font-size:16px; line-height:1.25; min-height:2.4em;}
+  .tag-card .price-line{display:flex; align-items:flex-end; justify-content:space-between; margin-top:8px;}
+  .tag-card .price{font-family:var(--font-display); font-size:38px; line-height:.9;}
+  .tag-card .price sup{font-size:.45em; top:-.65em; position:relative;}
+  .tag-card .unit{font-family:var(--font-mono); font-size:11px; color:var(--gray);}
+  .delta{font-family:var(--font-mono); font-size:12px; font-weight:600; padding:2px 7px; border:1.5px solid var(--ink);}
+  .delta.up{background:var(--red); color:#fff; border-color:var(--red);}
+  .delta.down{background:var(--green); color:#fff; border-color:var(--green);}
+  .delta.flat{background:#eee;}
+
+  /* methodology */
+  .method{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
+  .m-step{border-top:6px solid var(--ink); padding-top:14px;}
+  .m-step .num{font-family:var(--font-display); font-size:34px; line-height:1;}
+  .m-step h3{font-size:16px; font-weight:800; margin:8px 0 6px;}
+  .m-step p{font-size:14px; color:#33312c;}
+  .method-note{
+    margin-top:34px; font-family:var(--font-mono); font-size:13px; border:2px dashed var(--ink);
+    padding:16px 18px; max-width:76ch; background:var(--receipt);
+  }
+
+  footer{padding:40px 0 60px; font-size:14px;}
+  footer .wrap{display:grid; grid-template-columns:1.4fr 1fr; gap:36px;}
+  footer .sig{font-family:var(--font-mono); font-size:12px; color:var(--gray); margin-top:12px; line-height:1.8;}
+  footer h4{font-family:var(--font-display); font-weight:400; text-transform:uppercase; font-size:22px; margin-bottom:8px;}
+
+  @media (max-width:900px){
+    .hero .wrap{grid-template-columns:1fr; gap:44px; padding-top:40px;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .stat:nth-child(1),.stat:nth-child(2){border-bottom:var(--rule);}
+    .cart-row{grid-template-columns:1fr; gap:8px;}
+    .cart-row .total{text-align:left;}
+    .method{grid-template-columns:1fr 1fr;}
+    footer .wrap{grid-template-columns:1fr;}
+    .calc-row{grid-template-columns:1fr;}
+  }
+  @media (max-width:560px){ .method{grid-template-columns:1fr;} }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none;}
+    html{scroll-behavior:auto;}
+    .bar-fill{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <span>The Cart Index · Folsom, CA</span>
+    <span id="mast-week">Published weekly</span>
+    <a id="gh-link" href="#" rel="noopener">Data &amp; code on GitHub ↗</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">A weekly grocery price index · Folsom, California</span>
+      <h1 class="title">The Cart<br>Index</h1>
+      <p class="dek">Every Monday morning, one economics student records what the <strong>same fixed basket</strong> costs at <strong>four Folsom grocery stores</strong> — Walmart, Target, Safeway, and Bel Air — item by item, straight from each retailer's own published store prices. National CPI tells you what food costs on average, months later. This tells you what it costs <strong>here, this week</strong> — measured, not estimated.</p>
+      <div class="hero-number">
+        <div class="index-price" aria-label="Current index value">
+          <span class="whole" id="idx-whole">—</span><span class="cents" id="idx-dec">·—</span>
+        </div>
+        <div class="hero-meta">
+          <span class="chip" id="wow-chip">— wk/wk</span>
+          <span class="base-note" id="base-note">Base week = 100</span>
+        </div>
+      </div>
+      <span class="sample-badge">⚠ Showing simulated sample data. Replace <code>data/prices.csv</code> with your first real collection to go live.</span>
+    </div>
+    <div class="receipt-slot">
+      <div class="receipt" role="img" aria-label="Receipt-style summary of this week's index">
+        <h2>THE CART INDEX</h2>
+        <p class="sub">FOLSOM, CA — HYPERLOCAL CPI<br><span id="r-week">WEEK OF —</span></p>
+        <hr>
+        <div class="line"><span>COMPOSITE INDEX</span><span class="big" id="r-index">—</span></div>
+        <div class="line"><span>CHANGE (WK/WK)</span><span id="r-wow">—</span></div>
+        <div class="line"><span>CHANGE (SINCE BASE)</span><span id="r-base">—</span></div>
+        <hr>
+        <div class="line"><span>FULL CART, PRICIEST</span><span id="r-max">—</span></div>
+        <div class="line"><span>FULL CART, AVERAGE</span><span id="r-avg">—</span></div>
+        <div class="line"><span>FULL CART, CHEAPEST</span><span id="r-min">—</span></div>
+        <div class="line"><span>CHEAPEST AT</span><span id="r-min-store">—</span></div>
+        <div class="save">
+          <div class="line"><span>SHOP-SMART SAVINGS</span><span id="r-save">—/WK</span></div>
+        </div>
+        <div class="line"><span>ITEMS PRICED</span><span id="r-items">—</span></div>
+        <div class="line"><span>STORES CHECKED</span><span id="r-stores">—</span></div>
+        <div class="line"><span>COLLECTED BY</span><span>DUSTIN, ECON '27</span></div>
+        <hr>
+        <div class="barcode" aria-hidden="true"></div>
+        <p class="thanks">*** THANK YOU FOR READING ***</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
+
+<section id="index">
+  <div class="wrap">
+    <p class="kicker">01 — The number</p>
+    <h2 class="sec">Grocery inflation, measured on foot</h2>
+    <p class="sec-dek">The index is a weighted average of price changes across five food categories, benchmarked to the first week of collection (= 100). Weights follow the BLS food-at-home relative-importance structure, so a move in this line means the same thing a CPI move does — just for Folsom, and weekly instead of bimonthly.</p>
+
+    <div class="stats" id="stats">
+      <div class="stat"><b id="s-weeks">—</b><span>weeks tracked</span></div>
+      <div class="stat"><b id="s-obs">—</b><span>price observations</span></div>
+      <div class="stat"><b id="s-items">—</b><span>items in basket</span></div>
+      <div class="stat"><b id="s-stores">—</b><span>stores, every week</span></div>
+    </div>
+
+    <div class="chart-controls" role="group" aria-label="Chart view">
+      <button class="tag-btn" id="btn-composite" aria-pressed="true">Composite index</button>
+      <button class="tag-btn" id="btn-stores" aria-pressed="false">By store</button>
+    </div>
+    <div class="chart-box"><canvas id="chart" height="380" aria-label="Line chart of the Cart Index over time" role="img"></canvas></div>
+  </div>
+</section>
+
+<section id="carts">
+  <div class="wrap">
+    <p class="kicker">02 — The spread</p>
+    <h2 class="sec">The cheapest full cart</h2>
+    <p class="sec-dek" id="cart-dek">The exact same basket, rung up at each store this week. The gap between the cheapest and priciest cart is real money a family keeps by driving five extra minutes.</p>
+    <div class="cart-bars" id="cart-bars"></div>
+
+    <div class="calc">
+      <h3>What the spread is worth to you</h3>
+      <p class="small">Based on this week's percentage gap between the priciest and cheapest cart, applied to your own grocery budget.</p>
+      <div class="calc-row">
+        <div>
+          <label for="spend">Your weekly grocery spend: <span id="spend-label">$150</span></label>
+          <input type="range" id="spend" min="50" max="400" step="10" value="150">
+        </div>
+        <div class="calc-out">
+          <b id="calc-year">—</b>
+          <span>back in your pocket per year</span><br>
+          <span class="sub-save" id="calc-week">— per week, at this week's spread</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shelf">
+  <div class="wrap">
+    <p class="kicker">03 — The shelf</p>
+    <h2 class="sec">On the shelf this week</h2>
+    <p class="sec-dek">Average shelf price across all tracked stores for each basket item, with the week-over-week move. These are the tags shoppers actually see.</p>
+    <div class="shelf" id="shelf-grid"></div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="wrap">
+    <p class="kicker">04 — The method</p>
+    <h2 class="sec">How it's measured</h2>
+    <div class="method">
+      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named items, in the same package sizes, at the same stores — every single week. No substitutions; if an item is out of stock, it's flagged, not swapped.</p></div>
+      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website or app, with the exact Folsom store selected. Regular listed prices only — promotions and member-only prices are logged separately, never blended in.</p></div>
+      <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index, not a raw price average.</p></div>
+      <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a public CSV on GitHub. Anyone can audit the math, rebuild the index, or extend it to their own city.</p></div>
+    </div>
+    <p class="method-note">This is an independent student research project. It is not affiliated with, endorsed by, or informed by any retailer's internal data — every price is the retailer's own publicly listed price for its named Folsom store. Store names can be anonymized on request.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h4>The Cart Index</h4>
+      <p>Built and maintained by Dustin — economics, Folsom Lake College (transfer '27). Started as a question I kept asking while bagging groceries: <em>"how much did all of this cost last month?"</em> Now I measure it.</p>
+      <p class="sig">Contact / collaborate → open an issue on GitHub<br>Want this for your city? Fork the repo — the whole thing is one HTML file and one CSV.</p>
+    </div>
+    <div>
+      <h4>The data</h4>
+      <p class="sig">Schema: <code>date, store, item, category, unit, price</code><br>Updated every Monday · CSV + site: <a id="gh-link-2" href="#">github.com/…/cart-index</a><br>Reference series: BLS CPI, Food at Home, Sacramento–Roseville–Folsom (bimonthly)</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ================= CONFIG — edit these ================= */
+const CONFIG = {
+  GITHUB_URL: "https://github.com/YOUR-USERNAME/cart-index", // <-- put your repo URL here
+  DATA_URL: "data/prices.csv",
+  // BLS-style food-at-home category weights (must sum to 1)
+  WEIGHTS: { "Dairy & Eggs":0.20, "Meat & Poultry":0.25, "Produce":0.20, "Pantry":0.22, "Beverages":0.13 }
+};
+
+/* ============ sample data (simulated) — replaced automatically once data/prices.csv loads ============ */
+const SAMPLE_CSV = `date,store,item,category,unit,price
+2026-05-11,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
+2026-05-11,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.49
+2026-05-11,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
+2026-05-11,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
+2026-05-11,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,4.99
+2026-05-11,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-05-11,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-05-11,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-05-11,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
+2026-05-11,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
+2026-05-11,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-05-11,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-05-11,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-05-11,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.19
+2026-05-11,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.49
+2026-05-11,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,4.99
+2026-05-11,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.89
+2026-05-11,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
+2026-05-11,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.59
+2026-05-11,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-05-11,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-05-11,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.59
+2026-05-11,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.09
+2026-05-11,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-05-11,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-05-11,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
+2026-05-11,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
+2026-05-11,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.39
+2026-05-11,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-05-11,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.49
+2026-05-11,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.49
+2026-05-11,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
+2026-05-11,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
+2026-05-11,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
+2026-05-11,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-05-11,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.99
+2026-05-11,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-05-11,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.29
+2026-05-11,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-05-11,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
+2026-05-11,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.29
+2026-05-11,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.59
+2026-05-11,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,4.09
+2026-05-11,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.69
+2026-05-11,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
+2026-05-11,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.79
+2026-05-11,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.39
+2026-05-11,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-05-11,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-05-11,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,4.09
+2026-05-11,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.79
+2026-05-11,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-05-11,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,1.99
+2026-05-11,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-05-11,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.39
+2026-05-11,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,12.69
+2026-05-18,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
+2026-05-18,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.49
+2026-05-18,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
+2026-05-18,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
+2026-05-18,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
+2026-05-18,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-05-18,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-05-18,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-05-18,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
+2026-05-18,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
+2026-05-18,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-05-18,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-05-18,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-05-18,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.29
+2026-05-18,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
+2026-05-18,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
+2026-05-18,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
+2026-05-18,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.19
+2026-05-18,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
+2026-05-18,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-05-18,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-05-18,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
+2026-05-18,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
+2026-05-18,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-05-18,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-05-18,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
+2026-05-18,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
+2026-05-18,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.19
+2026-05-18,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-05-18,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
+2026-05-18,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
+2026-05-18,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
+2026-05-18,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
+2026-05-18,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
+2026-05-18,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-05-18,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.99
+2026-05-18,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-05-18,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-05-18,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-05-18,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
+2026-05-18,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
+2026-05-18,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.79
+2026-05-18,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-05-18,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.79
+2026-05-18,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
+2026-05-18,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.79
+2026-05-18,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.49
+2026-05-18,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-05-18,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-05-18,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,4.09
+2026-05-18,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.89
+2026-05-18,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-05-18,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,1.99
+2026-05-18,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
+2026-05-18,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.39
+2026-05-18,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,12.89
+2026-05-25,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
+2026-05-25,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
+2026-05-25,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
+2026-05-25,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
+2026-05-25,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.09
+2026-05-25,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-05-25,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-05-25,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-05-25,Walmart - Riley St,Cheerios,Pantry,18 oz,4.59
+2026-05-25,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
+2026-05-25,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-05-25,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-05-25,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-05-25,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.49
+2026-05-25,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
+2026-05-25,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,4.99
+2026-05-25,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.89
+2026-05-25,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.19
+2026-05-25,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
+2026-05-25,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-05-25,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-05-25,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
+2026-05-25,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
+2026-05-25,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-05-25,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-05-25,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
+2026-05-25,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
+2026-05-25,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.59
+2026-05-25,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-05-25,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
+2026-05-25,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
+2026-05-25,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.79
+2026-05-25,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
+2026-05-25,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
+2026-05-25,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-05-25,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
+2026-05-25,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-05-25,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-05-25,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-05-25,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
+2026-05-25,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.29
+2026-05-25,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.89
+2026-05-25,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-05-25,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.69
+2026-05-25,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.69
+2026-05-25,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.89
+2026-05-25,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.39
+2026-05-25,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-05-25,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-05-25,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,3.99
+2026-05-25,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.89
+2026-05-25,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-05-25,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,1.99
+2026-05-25,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-05-25,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.49
+2026-05-25,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,12.99
+2026-06-01,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
+2026-06-01,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
+2026-06-01,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
+2026-06-01,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
+2026-06-01,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
+2026-06-01,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-06-01,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-06-01,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-06-01,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
+2026-06-01,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
+2026-06-01,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-06-01,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-06-01,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-06-01,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.49
+2026-06-01,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.49
+2026-06-01,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
+2026-06-01,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
+2026-06-01,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.19
+2026-06-01,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
+2026-06-01,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-06-01,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-06-01,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.59
+2026-06-01,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.09
+2026-06-01,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-06-01,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-06-01,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
+2026-06-01,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
+2026-06-01,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.49
+2026-06-01,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-06-01,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
+2026-06-01,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.49
+2026-06-01,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
+2026-06-01,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
+2026-06-01,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
+2026-06-01,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-06-01,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
+2026-06-01,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-06-01,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.29
+2026-06-01,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-01,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
+2026-06-01,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
+2026-06-01,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.99
+2026-06-01,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-06-01,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.79
+2026-06-01,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.69
+2026-06-01,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.89
+2026-06-01,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.49
+2026-06-01,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-06-01,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-06-01,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,3.99
+2026-06-01,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.99
+2026-06-01,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-06-01,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-01,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-06-01,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.39
+2026-06-01,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,13.19
+2026-06-08,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
+2026-06-08,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
+2026-06-08,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
+2026-06-08,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
+2026-06-08,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.09
+2026-06-08,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-06-08,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-06-08,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-06-08,Walmart - Riley St,Cheerios,Pantry,18 oz,4.59
+2026-06-08,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
+2026-06-08,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-06-08,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-06-08,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-06-08,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.59
+2026-06-08,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
+2026-06-08,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
+2026-06-08,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
+2026-06-08,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
+2026-06-08,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
+2026-06-08,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-06-08,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-06-08,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
+2026-06-08,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
+2026-06-08,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-06-08,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-06-08,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
+2026-06-08,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
+2026-06-08,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.69
+2026-06-08,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.89
+2026-06-08,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
+2026-06-08,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.49
+2026-06-08,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
+2026-06-08,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
+2026-06-08,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
+2026-06-08,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-06-08,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
+2026-06-08,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-06-08,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-06-08,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-08,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
+2026-06-08,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
+2026-06-08,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.99
+2026-06-08,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-06-08,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.79
+2026-06-08,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.79
+2026-06-08,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.89
+2026-06-08,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.49
+2026-06-08,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-06-08,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-06-08,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,3.99
+2026-06-08,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.89
+2026-06-08,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.49
+2026-06-08,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-08,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-06-08,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.39
+2026-06-08,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,13.09
+2026-06-15,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.29
+2026-06-15,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
+2026-06-15,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.59
+2026-06-15,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
+2026-06-15,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.09
+2026-06-15,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-06-15,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-06-15,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-06-15,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
+2026-06-15,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
+2026-06-15,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-06-15,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-06-15,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-06-15,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.69
+2026-06-15,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.49
+2026-06-15,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
+2026-06-15,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
+2026-06-15,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
+2026-06-15,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
+2026-06-15,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-06-15,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-06-15,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
+2026-06-15,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
+2026-06-15,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-06-15,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-06-15,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
+2026-06-15,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
+2026-06-15,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.79
+2026-06-15,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-06-15,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.79
+2026-06-15,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
+2026-06-15,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
+2026-06-15,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
+2026-06-15,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
+2026-06-15,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-06-15,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
+2026-06-15,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-06-15,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.29
+2026-06-15,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-15,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-06-15,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
+2026-06-15,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,13.29
+2026-06-15,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,4.09
+2026-06-15,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.89
+2026-06-15,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.79
+2026-06-15,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.89
+2026-06-15,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.49
+2026-06-15,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-06-15,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-06-15,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,3.99
+2026-06-15,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.89
+2026-06-15,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-06-15,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,2.09
+2026-06-15,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-06-15,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.49
+2026-06-15,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,13.49
+2026-06-22,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.29
+2026-06-22,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.69
+2026-06-22,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.59
+2026-06-22,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
+2026-06-22,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
+2026-06-22,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-06-22,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-06-22,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-06-22,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
+2026-06-22,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
+2026-06-22,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-06-22,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-06-22,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-06-22,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.69
+2026-06-22,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
+2026-06-22,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.19
+2026-06-22,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
+2026-06-22,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
+2026-06-22,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
+2026-06-22,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-06-22,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-06-22,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
+2026-06-22,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
+2026-06-22,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-06-22,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-06-22,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
+2026-06-22,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
+2026-06-22,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.79
+2026-06-22,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-06-22,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.69
+2026-06-22,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
+2026-06-22,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.79
+2026-06-22,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
+2026-06-22,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
+2026-06-22,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-06-22,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
+2026-06-22,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-06-22,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-06-22,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-22,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-06-22,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
+2026-06-22,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,13.29
+2026-06-22,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-06-22,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.89
+2026-06-22,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.69
+2026-06-22,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.89
+2026-06-22,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.49
+2026-06-22,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-06-22,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-06-22,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,3.99
+2026-06-22,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.99
+2026-06-22,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-06-22,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-22,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-06-22,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.39
+2026-06-22,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,13.69
+2026-06-29,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
+2026-06-29,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.69
+2026-06-29,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
+2026-06-29,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
+2026-06-29,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
+2026-06-29,Walmart - Riley St,Bananas,Produce,per lb,0.49
+2026-06-29,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
+2026-06-29,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
+2026-06-29,Walmart - Riley St,Cheerios,Pantry,18 oz,4.79
+2026-06-29,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.79
+2026-06-29,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
+2026-06-29,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
+2026-06-29,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
+2026-06-29,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.79
+2026-06-29,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
+2026-06-29,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.19
+2026-06-29,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
+2026-06-29,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
+2026-06-29,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.79
+2026-06-29,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
+2026-06-29,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
+2026-06-29,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
+2026-06-29,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
+2026-06-29,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
+2026-06-29,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
+2026-06-29,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
+2026-06-29,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,3.09
+2026-06-29,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.99
+2026-06-29,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
+2026-06-29,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.79
+2026-06-29,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
+2026-06-29,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.79
+2026-06-29,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
+2026-06-29,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
+2026-06-29,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
+2026-06-29,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.79
+2026-06-29,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
+2026-06-29,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
+2026-06-29,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-29,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
+2026-06-29,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
+2026-06-29,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,13.19
+2026-06-29,Bel Air - E Bidwell St,Whole milk (store brand),Dairy & Eggs,1 gal,4.09
+2026-06-29,Bel Air - E Bidwell St,Large eggs (store brand),Dairy & Eggs,dozen,5.79
+2026-06-29,Bel Air - E Bidwell St,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.69
+2026-06-29,Bel Air - E Bidwell St,Chicken breast (boneless),Meat & Poultry,per lb,4.79
+2026-06-29,Bel Air - E Bidwell St,Ground beef 80/20,Meat & Poultry,per lb,6.59
+2026-06-29,Bel Air - E Bidwell St,Bananas,Produce,per lb,0.69
+2026-06-29,Bel Air - E Bidwell St,Baby carrots,Produce,1 lb bag,1.59
+2026-06-29,Bel Air - E Bidwell St,Romaine hearts,Produce,3 ct,3.89
+2026-06-29,Bel Air - E Bidwell St,Cheerios,Pantry,18 oz,5.89
+2026-06-29,Bel Air - E Bidwell St,Jif creamy peanut butter,Pantry,16 oz,3.49
+2026-06-29,Bel Air - E Bidwell St,Barilla spaghetti,Pantry,16 oz,1.99
+2026-06-29,Bel Air - E Bidwell St,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
+2026-06-29,Bel Air - E Bidwell St,Coca-Cola,Beverages,2 L,3.49
+2026-06-29,Bel Air - E Bidwell St,Starbucks Pike Place ground,Beverages,12 oz,13.49`;
+
+/* ================= helpers ================= */
+const $ = id => document.getElementById(id);
+const money = v => "$" + v.toFixed(2);
+const pct = v => (v>=0?"+":"") + v.toFixed(1) + "%";
+const fmtWeek = iso => {
+  const [y,m,d] = iso.split("-").map(Number);
+  return new Date(y, m-1, d).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+};
+
+function parseCSV(text){
+  return text.trim().split(/\r?\n/).slice(1).map(l=>{
+    const [date,store,item,category,unit,price] = l.split(",");
+    return {date,store,item,category,unit,price:parseFloat(price)};
+  }).filter(r=>r.date && !isNaN(r.price));
+}
+
+/* ================= index math ================= */
+function build(rows){
+  const weeks = [...new Set(rows.map(r=>r.date))].sort();
+  const stores = [...new Set(rows.map(r=>r.store))].sort();
+  const items = [...new Set(rows.map(r=>r.item))];
+  const cats = Object.keys(CONFIG.WEIGHTS);
+
+  const catSum = {}, catSumStore = {}, cartTotals = {}, itemAvg = {};
+  for(const r of rows){
+    catSum[r.date] ??= {}; catSum[r.date][r.category] = (catSum[r.date][r.category]||0) + r.price;
+    catSumStore[r.date] ??= {}; catSumStore[r.date][r.store] ??= {};
+    catSumStore[r.date][r.store][r.category] = (catSumStore[r.date][r.store][r.category]||0) + r.price;
+    cartTotals[r.date] ??= {}; cartTotals[r.date][r.store] = (cartTotals[r.date][r.store]||0) + r.price;
+    itemAvg[r.date] ??= {}; itemAvg[r.date][r.item] ??= {sum:0,n:0,unit:r.unit,cat:r.category};
+    itemAvg[r.date][r.item].sum += r.price; itemAvg[r.date][r.item].n++;
+  }
+  const base = weeks[0];
+  const laspeyres = (sumsT, sums0) =>
+    100 * cats.reduce((a,c)=> a + CONFIG.WEIGHTS[c] * ((sumsT[c]||0)/(sums0[c]||1)), 0);
+
+  const composite = weeks.map(w => laspeyres(catSum[w], catSum[base]));
+  const byStore = {};
+  for(const s of stores) byStore[s] = weeks.map(w => laspeyres(catSumStore[w][s]||{}, catSumStore[base][s]||{}));
+
+  return {rows, weeks, stores, items, base, composite, byStore, cartTotals, itemAvg};
+}
+
+/* ================= render ================= */
+let chart;
+function render(D){
+  const wLast = D.weeks[D.weeks.length-1], wPrev = D.weeks[D.weeks.length-2] || wLast;
+  const idx = D.composite[D.composite.length-1];
+  const idxPrev = D.composite[D.composite.length-2] ?? idx;
+  const wow = (idx/idxPrev - 1)*100, sinceBase = idx - 100;
+
+  // hero
+  const [whole, dec] = idx.toFixed(1).split(".");
+  $("idx-whole").textContent = whole;
+  $("idx-dec").textContent = "." + dec;
+  const chipEl = $("wow-chip");
+  chipEl.textContent = (wow>=0?"▲ ":"▼ ") + pct(wow) + " wk/wk";
+  chipEl.className = "chip " + (Math.abs(wow)<0.05 ? "" : (wow>0?"up":"down"));
+  $("base-note").textContent = "Week of " + fmtWeek(D.base) + " = 100";
+  $("mast-week").textContent = "Week of " + fmtWeek(wLast);
+
+  // carts
+  const totals = D.stores.map(s=>({s, t:D.cartTotals[wLast][s]})).sort((a,b)=>a.t-b.t);
+  const min = totals[0], max = totals[totals.length-1];
+  const avg = totals.reduce((a,x)=>a+x.t,0)/totals.length;
+  const spreadPct = (max.t - min.t)/max.t;
+
+  // receipt
+  $("r-week").textContent = "WEEK OF " + fmtWeek(wLast).toUpperCase();
+  $("r-index").textContent = idx.toFixed(1);
+  $("r-wow").textContent = pct(wow);
+  $("r-base").textContent = pct(sinceBase);
+  $("r-max").textContent = money(max.t);
+  $("r-avg").textContent = money(avg);
+  $("r-min").textContent = money(min.t);
+  $("r-min-store").textContent = min.s.split(" - ")[0].toUpperCase();
+  $("r-save").textContent = money(max.t-min.t) + "/WK";
+  $("r-items").textContent = D.items.length;
+  $("r-stores").textContent = D.stores.length;
+
+  // stats
+  $("s-weeks").textContent = D.weeks.length;
+  $("s-obs").textContent = D.rows.length.toLocaleString();
+  $("s-items").textContent = D.items.length;
+  $("s-stores").textContent = D.stores.length;
+
+  // ticker
+  const tick = D.items.map(it=>{
+    const now = D.itemAvg[wLast][it], prev = D.itemAvg[wPrev][it];
+    const ch = prev ? (now.sum/now.n)/(prev.sum/prev.n)-1 : 0;
+    const cls = ch>0.0005 ? "up" : ch<-0.0005 ? "down" : "";
+    const arrow = ch>0.0005 ? "▲" : ch<-0.0005 ? "▼" : "•";
+    return `<span class="${cls}">${it.toUpperCase()} ${arrow} ${pct(ch*100)}</span>`;
+  }).join("");
+  $("ticker-track").innerHTML = tick + tick; // duplicate for seamless loop
+
+  // cart bars
+  $("cart-dek").innerHTML = `The exact same ${D.items.length}-item basket, rung up at each store during the week of ${fmtWeek(wLast)}. The gap between the cheapest and priciest cart — <strong>${money(max.t-min.t)} this week</strong> — is real money a family keeps by driving five extra minutes.`;
+  $("cart-bars").innerHTML = totals.map((x,i)=>{
+    const wPct = (x.t/max.t*100).toFixed(1);
+    const [name, loc] = x.s.split(" - ");
+    return `<div class="cart-row ${i===0?"cheapest":""}">
+      <div class="store">${name}${i===0?'<span class="cheapest-flag">CHEAPEST</span>':""}<small>${loc||""}</small></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${wPct}%"></div></div>
+      <div class="total">${money(x.t)}</div>
+    </div>`;
+  }).join("");
+
+  // calculator
+  const update = ()=>{
+    const spend = +$("spend").value;
+    $("spend-label").textContent = "$" + spend;
+    $("calc-week").textContent = money(spend*spreadPct) + " per week, at this week's " + (spreadPct*100).toFixed(1) + "% spread";
+    $("calc-year").textContent = "$" + Math.round(spend*spreadPct*52).toLocaleString();
+  };
+  $("spend").oninput = update; update();
+
+  // shelf tags
+  $("shelf-grid").innerHTML = D.items.map(it=>{
+    const now = D.itemAvg[wLast][it], prev = D.itemAvg[wPrev][it];
+    const p = now.sum/now.n;
+    const ch = prev ? (p/(prev.sum/prev.n)-1)*100 : 0;
+    const cls = ch>0.05 ? "up" : ch<-0.05 ? "down" : "flat";
+    const arrow = ch>0.05 ? "▲" : ch<-0.05 ? "▼" : "—";
+    const [dol, cts] = p.toFixed(2).split(".");
+    return `<div class="tag-card">
+      <div class="cat"><span>${now.cat}</span><span>AVG · ${D.stores.length} STORES</span></div>
+      <div class="body">
+        <div class="item">${it}</div>
+        <div class="price-line">
+          <div><span class="price">$${dol}<sup>${cts}</sup></span><div class="unit">${now.unit}</div></div>
+          <span class="delta ${cls}">${arrow} ${pct(ch)}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  drawChart(D, "composite");
+  $("btn-composite").onclick = ()=>{ setPressed("btn-composite"); drawChart(D,"composite"); };
+  $("btn-stores").onclick = ()=>{ setPressed("btn-stores"); drawChart(D,"stores"); };
+}
+
+function setPressed(id){
+  ["btn-composite","btn-stores"].forEach(b=>$(b).setAttribute("aria-pressed", b===id ? "true":"false"));
+}
+
+function drawChart(D, mode){
+  const labels = D.weeks.map(fmtWeek);
+  const storeColors = ["#d7263d","#1e7a4a","#c79a00","#3557a0","#8a4fbf"];
+  const datasets = mode==="composite"
+    ? [{label:"Composite Cart Index", data:D.composite, borderColor:"#141414", backgroundColor:"#141414",
+        borderWidth:3.5, pointRadius:4, pointBackgroundColor:"#ffd23f", pointBorderColor:"#141414", pointBorderWidth:2, tension:.25}]
+    : D.stores.map((s,i)=>({label:s.split(" - ")[0], data:D.byStore[s], borderColor:storeColors[i%5],
+        backgroundColor:storeColors[i%5], borderWidth:2.5, pointRadius:3, tension:.25}));
+  if(chart) chart.destroy();
+  chart = new Chart($("chart"), {
+    type:"line",
+    data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{font:{family:"'IBM Plex Mono', monospace", size:12}, boxWidth:14}},
+        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(2)}`},
+          titleFont:{family:"'IBM Plex Mono', monospace"}, bodyFont:{family:"'IBM Plex Mono', monospace"}} },
+      scales:{
+        y:{ title:{display:true, text:"Index (base week = 100)", font:{family:"'IBM Plex Mono', monospace", size:11}},
+            ticks:{font:{family:"'IBM Plex Mono', monospace", size:11}}, grid:{color:"rgba(20,20,20,.08)"} },
+        x:{ ticks:{font:{family:"'IBM Plex Mono', monospace", size:11}}, grid:{display:false} }
+      }
+    }
+  });
+}
+
+/* ================= boot ================= */
+(async function(){
+  $("gh-link").href = CONFIG.GITHUB_URL;
+  $("gh-link-2").href = CONFIG.GITHUB_URL;
+  let csv = null;
+  try{
+    const res = await fetch(CONFIG.DATA_URL, {cache:"no-store"});
+    if(res.ok){ const t = await res.text(); if(t.includes("date,store")) csv = t; }
+  }catch(e){ /* fall through to sample */ }
+  if(!csv){ csv = SAMPLE_CSV; document.body.classList.add("sample"); }
+  render(build(parseCSV(csv)));
+})();
+</script>
+</body>
+</html>
