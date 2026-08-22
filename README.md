@@ -41,13 +41,13 @@ Every item exists at all three stores in a comparable form. National brands are 
 | 3 | Tillamook medium cheddar | 8 oz | Dairy & Eggs |
 | 4 | Boneless skinless chicken breast (spec below) | per lb | Meat & Poultry |
 | 5 | Ground beef 80/20 (spec below) | per lb | Meat & Poultry |
-| 6 | Bananas, conventional | per lb | Produce |
+| 6 | Bananas, conventional (spec below) | per banana | Produce |
 | 7 | Baby carrots, store brand | 1 lb bag | Produce |
 | 8 | Romaine hearts | 3 ct | Produce |
 | 9 | Cheerios (plain) | 18 oz | Pantry |
 | 10 | Jif creamy peanut butter | 16 oz | Pantry |
 | 11 | Barilla spaghetti | 16 oz | Pantry |
-| 12 | White sandwich bread, store brand | ~20 oz loaf | Pantry |
+| 12 | White sandwich bread, store brand (spec below) | 20 oz loaf | Pantry |
 | 13 | Coca-Cola | 2 L | Beverages |
 | 14 | Starbucks Pike Place, ground | 12 oz | Beverages |
 
@@ -60,6 +60,12 @@ Meat is where unwritten collection rules break an index, because the cheapest pe
 **Item 5, ground beef.** Store-brand, conventional, 80% lean / 20% fat, in the tray pack closest to one pound. Products labeled "ground chuck" qualify only if the label also states 80/20. Record the per-pound price displayed for that tray. Never a chub or roll, never a value or family pack over 2 lb, never Angus, grass-fed, organic, or other premium lines.
 
 **If the specified pack is unavailable** at a store in a given week, apply the out-of-stock rule below. Do not substitute the value pack.
+
+### Produce and packaged-item measurement notes (effective 2026-08-24)
+
+**Item 6, bananas.** Priced per banana (per each) at all three stores. Target displays only a per-each price for bananas, so per-each is the unit directly observable at every store, and it requires no assumption about banana weight. Record the displayed price of one conventional banana.
+
+**Item 12, white sandwich bread.** Safeway's store-brand loaf is 22 oz where Walmart's and Target's are 20 oz. The recorded Safeway price is normalized to a 20 oz equivalent: the observed loaf price divided by 22, multiplied by 20. This keeps the basket quantity identical across stores while starting from the observed shelf price. If any store changes its loaf size, the same per-ounce normalization to 20 oz applies, with the change noted in the commit message.
 
 ### Price-type rule (applies to every item)
 
