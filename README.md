@@ -55,11 +55,17 @@ Every item exists at all three stores in a comparable form. National brands are 
 
 Meat is where unwritten collection rules break an index, because the cheapest per-pound option is almost always a large value pack or chub whose bulk discount varies week to week. Recording it confounds pack economics with price change. This index therefore prices the standard retail unit a typical basket shopper buys:
 
-**Item 4, chicken breast.** Store-brand, conventional (not organic, not air-chilled premium lines, not frozen), boneless skinless breast, in the smallest standard tray offered (typically 1 to 2 lb). Record the per-pound price displayed for that tray.
+**Item 4, chicken breast.** Store-brand or store-labeled, conventional (not organic, not air-chilled, not "no antibiotics ever" or other premium lines), fresh (not frozen), boneless skinless breast, in the retailer's large or value-pack tray. Record the per-pound price.
 
-**Item 5, ground beef.** Store-brand, conventional, 80% lean / 20% fat, in the tray pack closest to one pound. Products labeled "ground chuck" qualify only if the label also states 80/20. Record the per-pound price displayed for that tray. Never a chub or roll, never a value or family pack over 2 lb, never Angus, grass-fed, organic, or other premium lines.
+Why the value-pack tier: Walmart offers no conventional store-brand fresh boneless skinless breast in any size below a family pack; its only smaller option is a premium antibiotic-free line. Target and Safeway offer both standard and value packs. The value-pack tier is therefore the only tier stocked at all three stores, and holding product tier constant across stores matters more than holding pack size constant, because per-pound pricing already normalizes quantity. Tracked products: Walmart Freshness Guaranteed boneless skinless chicken breasts (large tray); Target Good & Gather Fresh All Natural boneless & skinless chicken breast value pack (2.5-5.25 lb); Safeway boneless skinless chicken breast value pack (3.5 lb).
 
-**If the specified pack is unavailable** at a store in a given week, apply the out-of-stock rule below. Do not substitute the value pack.
+**Item 5, ground beef.** Store-brand, conventional, 80% lean / 20% fat, in the 1 lb tray. Products labeled "ground chuck" qualify only if the label also states 80/20. Record the per-pound price. Never a chub, roll, or loaf; never a value or family pack; never Angus, grass-fed, organic, or other premium lines. All three stores stock a qualifying 1 lb tray: Walmart All Natural 80/20 Ground Beef Chuck (1 lb tray); Target Good & Gather Fresh All Natural 80/20 Ground Beef (1 lb); Safeway Signature SELECT 80% Lean 20% Fat Ground Beef (1 lb).
+
+**Pack-size comparability, disclosed.** Chicken is priced from value packs whose sizes differ by store (roughly 2.5 to 6 lb). Part of any cross-store chicken gap therefore reflects pack economics rather than store pricing, which affects the level of a cart comparison. It does not affect the index, which measures change over time using the same product at the same store every week.
+
+**Once selected, the product is fixed.** The rules above choose each product once. Every subsequent week, re-price that same product, even if a different item is cheaper that week. Product URLs are saved and reused. The rules are re-run only if a tracked product is discontinued.
+
+**If a tracked product is unavailable** in a given week, apply the out-of-stock rule below. Do not substitute a different pack size or tier.
 
 ### Produce and packaged-item measurement notes (effective 2026-08-24)
 
