@@ -43,10 +43,10 @@
     -webkit-font-smoothing:antialiased;
   }
   a{color:var(--ink);}
-  .sig a, .m-step a, .sample-badge a, .method-note a{
+  .sig a, .m-step a, .method-note a{
     color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px;
   }
-  .sig a:hover, .m-step a:hover, .sample-badge a:hover{background:var(--yellow); color:var(--ink);}
+  .sig a:hover, .m-step a:hover{background:var(--yellow); color:var(--ink);}
   :focus-visible{outline:3px dashed var(--red); outline-offset:3px;}
   .wrap{max-width:1160px; margin:0 auto; padding:0 24px;}
 
@@ -100,11 +100,6 @@
   .chip.up{background:var(--red); color:#fff; border-color:var(--red);}
   .chip.down{background:var(--green); color:#fff; border-color:var(--green);}
   .hero-meta .base-note{display:block; margin-top:10px; font-family:var(--font-mono); font-size:12px; color:var(--gray);}
-  .sample-badge{
-    display:none; margin-top:14px; font-family:var(--font-mono); font-size:12px;
-    background:#fff; border:2px dashed var(--red); color:var(--red); padding:6px 10px; max-width:44ch;
-  }
-  body.sample .sample-badge{display:inline-block;}
   .prelaunch-badge{
     display:none; margin-top:14px; font-family:var(--font-mono); font-size:12px;
     background:var(--receipt); border:2px dashed var(--ink); padding:6px 10px; max-width:44ch;
@@ -251,6 +246,11 @@
   .chart-note{margin-top:14px; font-family:var(--font-mono); font-size:12px; color:var(--gray); max-width:76ch; line-height:1.7;}
   .chart-note a{color:inherit;}
   .revision-log{margin-top:22px; border-style:solid;}
+  .revision-log summary{cursor:pointer; letter-spacing:.08em; list-style:none;}
+  .revision-log summary::-webkit-details-marker{display:none;}
+  .revision-log summary::before{content:"\25B8 "; display:inline-block; transition:transform .15s;}
+  .revision-log[open] summary::before{content:"\25BE ";}
+  .revision-log p{margin:12px 0 0;}
   .revision-log .rev-date{background:var(--yellow); padding:0 4px; font-weight:600;}
   .revision-log strong{letter-spacing:.08em;}
 
@@ -308,7 +308,6 @@
         </div>
       </div>
       <span class="prelaunch-badge">Pilot phase complete (Jul 6 – Aug 17). The official index publishes its first reading Monday, Aug 24, 2026.</span>
-      <span class="sample-badge">⚠ Showing simulated sample data. Replace <code><a data-link="csv" href="#">data/prices.csv</a></code> with your first real collection to go live.</span>
     </div>
     <div class="receipt-slot">
       <div class="receipt" role="img" aria-label="Receipt-style summary of this week's index">
@@ -402,19 +401,29 @@
     <p class="kicker">04 — The method</p>
     <h2 class="sec">How it's measured</h2>
     <div class="method">
-      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named items, in the same package sizes, at the same stores — every single week. No substitutions; if an item is out of stock, it's flagged and its prior-week price is carried forward (standard index imputation), never substituted. The two meat items are specified exactly: store-brand conventional 80/20 ground beef and boneless-skinless chicken breast, priced per pound from the standard tray closest to one pound — never value packs, chubs, or premium lines.</p></div>
+      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named products, at the same stores, every week. Each item is defined by a written specification — brand tier, cut, package size, and price type — so every observation is like-for-like. Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted. Full specifications are in the README.</p></div>
       <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website or app, with the exact Folsom store location selected. Prices are recorded as displayed for that store, including free loyalty-program pricing where the retailer shows it (Safeway for U); clip-to-activate coupons and paid-membership prices are never used.</p></div>
       <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index, not a raw price average.</p></div>
       <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>. Anyone can audit the math, rebuild the index, or extend it to their own city.</p></div>
     </div>
-    <div class="method-note revision-log" id="revisions">
-      <strong>REVISION LOG</strong><br>
-      <span class="rev-date">2026-08-21</span> — The seven collection weeks of Jul 6 – Aug 17 are designated the pilot phase. During the pilot, selection of the two meat items was not governed by a written specification, so those observations are not like-for-like week to week. The index previously displayed on this site, computed from all pilot data with base week Jul 6, is superseded and is not comparable to the official series. Pilot rows remain published in the CSV, flagged <code>pilot</code>, and are excluded from the index.<br>
-      <span class="rev-date">2026-08-21</span> — The store panel is set at three stores: Walmart, Target, and Safeway. The pilot panel also included Bel Air, removed to avoid a potential conflict of interest for the author (see the README). Its 98 pilot observations remain published at <a data-link="archiveCsv" href="#"><code>archive/belair.csv</code></a>.<br>
-      <span class="rev-date">2026-08-22</span> — Meat specifications finalized against each retailer’s actual Folsom catalog. Ground beef is priced from the store-brand 1 lb 80/20 tray, which all three stores stock. Chicken breast is priced from each store’s conventional store-brand value-pack tray: Walmart stocks no conventional store-brand breast below family-pack size, so the value-pack tier is the only tier common to all three stores. Because value-pack sizes differ by store, part of any cross-store chicken gap reflects pack economics rather than store pricing; this affects cart levels, not the index.<br>
-      <span class="rev-date">2026-08-22</span> — Produce and packaged-item rules finalized ahead of the base week: bananas are priced per banana at all three stores (Target displays only a per-each price, making per-each the unit observable everywhere), and Safeway’s 22 oz store-brand loaf is normalized to a 20 oz equivalent via its per-ounce price. Pilot rows for Target bananas were corrected from an inferred per-pound figure to the observed per-each price ($0.29, unit <code>per banana</code>).<br>
-      <span class="rev-date">2026-08-21</span> — Collection protocol adopted in writing (see the README): exact item specifications for both meat items, and the price-type rule under which Safeway prices are the store’s free-membership (for U) prices — the same instrument every week. The official series begins with the first collection under this protocol, Monday, Aug 24, 2026 = 100.
-    </div>
+    <details class="method-note revision-log" id="revisions">
+      <summary><strong>REVISION LOG</strong> — 2 entries</summary>
+      <p><span class="rev-date">2026-08-22</span> — <strong>Collection protocol adopted; official series defined.</strong>
+      A written protocol now fixes every item specification: brand tier, cut, and package size for both meat items;
+      per-banana pricing (the only unit all three stores display); normalization of Safeway’s 22 oz loaf to a 20 oz
+      equivalent; and the price-type rule under which Safeway prices are its free-membership (for U) prices. Ground beef
+      is priced from the store-brand 1 lb 80/20 tray; chicken breast from each store’s value-pack tier, the only tier
+      stocked at all three, so part of any cross-store chicken gap reflects pack size rather than store pricing — this
+      affects cart levels, not the index. The official series begins with the first collection under this protocol,
+      Monday, Aug 24, 2026 = 100.</p>
+      <p><span class="rev-date">2026-08-21</span> — <strong>Jul 6 – Aug 17 designated the pilot phase; panel set at three stores.</strong>
+      During those seven weeks the meat items were not selected under a written specification, so those observations are not
+      like-for-like week to week. They remain published in the CSV, flagged <code>pilot</code>, and are excluded from the index;
+      the index previously shown here, computed from all pilot data with base week Jul 6, is superseded and not comparable to
+      the official series. Target banana rows were corrected from an inferred per-pound figure to the observed per-each price.
+      The pilot panel also included Bel Air, removed to avoid a potential conflict of interest for the author (see the README);
+      its 98 pilot observations remain published at <a data-link="archiveCsv" href="#"><code>archive/belair.csv</code></a>.</p>
+    </details>
     <p class="method-note">This is an independent student research project. It is not affiliated with, endorsed by, or informed by any retailer's internal data — every price is the retailer's own publicly listed price for its named Folsom store. Store names can be anonymized on request.</p>
   </div>
 </section>
@@ -491,343 +500,7 @@ function wireLinks(){
 }
 
 /* ============ sample data (simulated) — replaced automatically once data/prices.csv loads ============ */
-const SAMPLE_CSV = `date,store,item,category,unit,price
-2026-05-11,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
-2026-05-11,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.49
-2026-05-11,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
-2026-05-11,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
-2026-05-11,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,4.99
-2026-05-11,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-05-11,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-05-11,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-05-11,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
-2026-05-11,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
-2026-05-11,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-05-11,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-05-11,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-05-11,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.19
-2026-05-11,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.49
-2026-05-11,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,4.99
-2026-05-11,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.89
-2026-05-11,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
-2026-05-11,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.59
-2026-05-11,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-05-11,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-05-11,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.59
-2026-05-11,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.09
-2026-05-11,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-05-11,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-05-11,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
-2026-05-11,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
-2026-05-11,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.39
-2026-05-11,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
-2026-05-11,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.49
-2026-05-11,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.49
-2026-05-11,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
-2026-05-11,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
-2026-05-11,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
-2026-05-11,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-05-11,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.99
-2026-05-11,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-05-11,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.29
-2026-05-11,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-05-11,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
-2026-05-11,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.29
-2026-05-11,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.59
-2026-05-18,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
-2026-05-18,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.49
-2026-05-18,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
-2026-05-18,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
-2026-05-18,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
-2026-05-18,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-05-18,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-05-18,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-05-18,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
-2026-05-18,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
-2026-05-18,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-05-18,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-05-18,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-05-18,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.29
-2026-05-18,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
-2026-05-18,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
-2026-05-18,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
-2026-05-18,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.19
-2026-05-18,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
-2026-05-18,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-05-18,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-05-18,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
-2026-05-18,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
-2026-05-18,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-05-18,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-05-18,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
-2026-05-18,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
-2026-05-18,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.19
-2026-05-18,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
-2026-05-18,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
-2026-05-18,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
-2026-05-18,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
-2026-05-18,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
-2026-05-18,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
-2026-05-18,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-05-18,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.99
-2026-05-18,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-05-18,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
-2026-05-18,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-05-18,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
-2026-05-18,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
-2026-05-18,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.79
-2026-05-25,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
-2026-05-25,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
-2026-05-25,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
-2026-05-25,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
-2026-05-25,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.09
-2026-05-25,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-05-25,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-05-25,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-05-25,Walmart - Riley St,Cheerios,Pantry,18 oz,4.59
-2026-05-25,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
-2026-05-25,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-05-25,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-05-25,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-05-25,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.49
-2026-05-25,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
-2026-05-25,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,4.99
-2026-05-25,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.89
-2026-05-25,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.19
-2026-05-25,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
-2026-05-25,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-05-25,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-05-25,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
-2026-05-25,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
-2026-05-25,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-05-25,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-05-25,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
-2026-05-25,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
-2026-05-25,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.59
-2026-05-25,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
-2026-05-25,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
-2026-05-25,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
-2026-05-25,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.79
-2026-05-25,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
-2026-05-25,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
-2026-05-25,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-05-25,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
-2026-05-25,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-05-25,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
-2026-05-25,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-05-25,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
-2026-05-25,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.29
-2026-05-25,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.89
-2026-06-01,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
-2026-06-01,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
-2026-06-01,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
-2026-06-01,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.79
-2026-06-01,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
-2026-06-01,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-06-01,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-06-01,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-06-01,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
-2026-06-01,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
-2026-06-01,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-06-01,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-06-01,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-06-01,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.49
-2026-06-01,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.49
-2026-06-01,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
-2026-06-01,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
-2026-06-01,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.19
-2026-06-01,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
-2026-06-01,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-06-01,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-06-01,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.59
-2026-06-01,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.09
-2026-06-01,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-06-01,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-06-01,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
-2026-06-01,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
-2026-06-01,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.49
-2026-06-01,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
-2026-06-01,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
-2026-06-01,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.49
-2026-06-01,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
-2026-06-01,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
-2026-06-01,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
-2026-06-01,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-06-01,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
-2026-06-01,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-06-01,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.29
-2026-06-01,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-06-01,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
-2026-06-01,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
-2026-06-01,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.99
-2026-06-08,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
-2026-06-08,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
-2026-06-08,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
-2026-06-08,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
-2026-06-08,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.09
-2026-06-08,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-06-08,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-06-08,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-06-08,Walmart - Riley St,Cheerios,Pantry,18 oz,4.59
-2026-06-08,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
-2026-06-08,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-06-08,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-06-08,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-06-08,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.59
-2026-06-08,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
-2026-06-08,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
-2026-06-08,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
-2026-06-08,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
-2026-06-08,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
-2026-06-08,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-06-08,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-06-08,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
-2026-06-08,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
-2026-06-08,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-06-08,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-06-08,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
-2026-06-08,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
-2026-06-08,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.69
-2026-06-08,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.89
-2026-06-08,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.59
-2026-06-08,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.49
-2026-06-08,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
-2026-06-08,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
-2026-06-08,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.69
-2026-06-08,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-06-08,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
-2026-06-08,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-06-08,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
-2026-06-08,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-06-08,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
-2026-06-08,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
-2026-06-08,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,12.99
-2026-06-15,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.29
-2026-06-15,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.59
-2026-06-15,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.59
-2026-06-15,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
-2026-06-15,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.09
-2026-06-15,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-06-15,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-06-15,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-06-15,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
-2026-06-15,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
-2026-06-15,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-06-15,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-06-15,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-06-15,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.69
-2026-06-15,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.49
-2026-06-15,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.09
-2026-06-15,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
-2026-06-15,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
-2026-06-15,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
-2026-06-15,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-06-15,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-06-15,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
-2026-06-15,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
-2026-06-15,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-06-15,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-06-15,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
-2026-06-15,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
-2026-06-15,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.79
-2026-06-15,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
-2026-06-15,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.79
-2026-06-15,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
-2026-06-15,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.69
-2026-06-15,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
-2026-06-15,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
-2026-06-15,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-06-15,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
-2026-06-15,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-06-15,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.29
-2026-06-15,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-06-15,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
-2026-06-15,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
-2026-06-15,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,13.29
-2026-06-22,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.29
-2026-06-22,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.69
-2026-06-22,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.59
-2026-06-22,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
-2026-06-22,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
-2026-06-22,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-06-22,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-06-22,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-06-22,Walmart - Riley St,Cheerios,Pantry,18 oz,4.69
-2026-06-22,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.69
-2026-06-22,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-06-22,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-06-22,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-06-22,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.69
-2026-06-22,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
-2026-06-22,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.19
-2026-06-22,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
-2026-06-22,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
-2026-06-22,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.69
-2026-06-22,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-06-22,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-06-22,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
-2026-06-22,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
-2026-06-22,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-06-22,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-06-22,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.39
-2026-06-22,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,2.99
-2026-06-22,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.79
-2026-06-22,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
-2026-06-22,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.69
-2026-06-22,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
-2026-06-22,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.79
-2026-06-22,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.29
-2026-06-22,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
-2026-06-22,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-06-22,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.89
-2026-06-22,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-06-22,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
-2026-06-22,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-06-22,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.69
-2026-06-22,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
-2026-06-22,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,13.29
-2026-06-29,Walmart - Riley St,Whole milk (store brand),Dairy & Eggs,1 gal,3.19
-2026-06-29,Walmart - Riley St,Large eggs (store brand),Dairy & Eggs,dozen,4.69
-2026-06-29,Walmart - Riley St,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.49
-2026-06-29,Walmart - Riley St,Chicken breast (boneless),Meat & Poultry,per lb,3.89
-2026-06-29,Walmart - Riley St,Ground beef 80/20,Meat & Poultry,per lb,5.19
-2026-06-29,Walmart - Riley St,Bananas,Produce,per lb,0.49
-2026-06-29,Walmart - Riley St,Baby carrots,Produce,1 lb bag,1.29
-2026-06-29,Walmart - Riley St,Romaine hearts,Produce,3 ct,3.19
-2026-06-29,Walmart - Riley St,Cheerios,Pantry,18 oz,4.79
-2026-06-29,Walmart - Riley St,Jif creamy peanut butter,Pantry,16 oz,2.79
-2026-06-29,Walmart - Riley St,Barilla spaghetti,Pantry,16 oz,1.59
-2026-06-29,Walmart - Riley St,White sandwich bread (store brand),Pantry,20 oz loaf,2.09
-2026-06-29,Walmart - Riley St,Coca-Cola,Beverages,2 L,2.69
-2026-06-29,Walmart - Riley St,Starbucks Pike Place ground,Beverages,12 oz,10.79
-2026-06-29,Target - Blue Ravine Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.59
-2026-06-29,Target - Blue Ravine Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.19
-2026-06-29,Target - Blue Ravine Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,4.99
-2026-06-29,Target - Blue Ravine Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.29
-2026-06-29,Target - Blue Ravine Rd,Ground beef 80/20,Meat & Poultry,per lb,5.79
-2026-06-29,Target - Blue Ravine Rd,Bananas,Produce,per lb,0.59
-2026-06-29,Target - Blue Ravine Rd,Baby carrots,Produce,1 lb bag,1.39
-2026-06-29,Target - Blue Ravine Rd,Romaine hearts,Produce,3 ct,3.49
-2026-06-29,Target - Blue Ravine Rd,Cheerios,Pantry,18 oz,5.19
-2026-06-29,Target - Blue Ravine Rd,Jif creamy peanut butter,Pantry,16 oz,2.99
-2026-06-29,Target - Blue Ravine Rd,Barilla spaghetti,Pantry,16 oz,1.79
-2026-06-29,Target - Blue Ravine Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.29
-2026-06-29,Target - Blue Ravine Rd,Coca-Cola,Beverages,2 L,3.09
-2026-06-29,Target - Blue Ravine Rd,Starbucks Pike Place ground,Beverages,12 oz,11.99
-2026-06-29,Safeway - Prairie City Rd,Whole milk (store brand),Dairy & Eggs,1 gal,3.99
-2026-06-29,Safeway - Prairie City Rd,Large eggs (store brand),Dairy & Eggs,dozen,5.79
-2026-06-29,Safeway - Prairie City Rd,Tillamook medium cheddar,Dairy & Eggs,8 oz,5.59
-2026-06-29,Safeway - Prairie City Rd,Chicken breast (boneless),Meat & Poultry,per lb,4.79
-2026-06-29,Safeway - Prairie City Rd,Ground beef 80/20,Meat & Poultry,per lb,6.39
-2026-06-29,Safeway - Prairie City Rd,Bananas,Produce,per lb,0.59
-2026-06-29,Safeway - Prairie City Rd,Baby carrots,Produce,1 lb bag,1.59
-2026-06-29,Safeway - Prairie City Rd,Romaine hearts,Produce,3 ct,3.79
-2026-06-29,Safeway - Prairie City Rd,Cheerios,Pantry,18 oz,5.79
-2026-06-29,Safeway - Prairie City Rd,Jif creamy peanut butter,Pantry,16 oz,3.39
-2026-06-29,Safeway - Prairie City Rd,Barilla spaghetti,Pantry,16 oz,1.99
-2026-06-29,Safeway - Prairie City Rd,White sandwich bread (store brand),Pantry,20 oz loaf,2.59
-2026-06-29,Safeway - Prairie City Rd,Coca-Cola,Beverages,2 L,3.39
-2026-06-29,Safeway - Prairie City Rd,Starbucks Pike Place ground,Beverages,12 oz,13.19`;
+
 
 /* ================= helpers ================= */
 const $ = id => document.getElementById(id);
@@ -1010,7 +683,13 @@ function drawChart(D, mode){
     const res = await fetch(CONFIG.DATA_PATH, {cache:"no-store"});
     if(res.ok){ const t = await res.text(); if(t.includes("date,store")) csv = t; }
   }catch(e){ /* fall through to sample */ }
-  if(!csv){ csv = SAMPLE_CSV; document.body.classList.add("sample"); }
+  if(!csv){
+    document.body.classList.add("prelaunch");
+    $("mast-week").textContent = "Data temporarily unavailable";
+    $("base-note").textContent = "The data file could not be loaded. No figures are shown rather than stale or estimated ones.";
+    $("wow-chip").textContent = "DATA UNAVAILABLE";
+    return;
+  }
   const officialRows = parseCSV(csv).filter(r => r.phase === "official");
   if(officialRows.length){
     render(build(officialRows));
