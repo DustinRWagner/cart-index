@@ -401,7 +401,7 @@
     <p class="kicker">04 — The method</p>
     <h2 class="sec">How it's measured</h2>
     <div class="method">
-      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named products, at the same stores, every week. Each item is defined by a written specification — brand tier, cut, package size, and price type — so every observation is like-for-like. Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted. Full specifications are in the README.</p></div>
+      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named products, at the same stores, every week. Each item is defined by a written specification — brand tier, cut, package size, and price type — so every observation is like-for-like. Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted. Full specifications are in the <a data-link="readme" href="#">README</a>.</p></div>
       <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website or app, with the exact Folsom store location selected. Prices are recorded as displayed for that store, including free loyalty-program pricing where the retailer shows it (Safeway for U); clip-to-activate coupons and paid-membership prices are never used.</p></div>
       <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index, not a raw price average.</p></div>
       <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>. Anyone can audit the math, rebuild the index, or extend it to their own city.</p></div>
@@ -421,7 +421,7 @@
       like-for-like week to week. They remain published in the CSV, flagged <code>pilot</code>, and are excluded from the index;
       the index previously shown here, computed from all pilot data with base week Jul 6, is superseded and not comparable to
       the official series. Target banana rows were corrected from an inferred per-pound figure to the observed per-each price.
-      The pilot panel also included Bel Air, removed to avoid a potential conflict of interest for the author (see the README);
+      The pilot panel also included Bel Air, removed to avoid a potential conflict of interest for the author (see the <a data-link="readme" href="#">README</a>);
       its 98 pilot observations remain published at <a data-link="archiveCsv" href="#"><code>archive/belair.csv</code></a>.</p>
     </details>
     <p class="method-note">This is an independent student research project. It is not affiliated with, endorsed by, or informed by any retailer's internal data — every price is the retailer's own publicly listed price for its named Folsom store. Store names can be anonymized on request.</p>
@@ -482,6 +482,7 @@ const LINKS = (() => {
     rawCsv:    `https://raw.githubusercontent.com/${CONFIG.GH_USER}/${CONFIG.GH_REPO}/${CONFIG.GH_BRANCH}/${CONFIG.DATA_PATH}`,
     mailto:    `mailto:${CONFIG.CONTACT_EMAIL}?subject=${encodeURIComponent("The Cart Index")}`,
     archiveCsv:`${repo}/blob/${CONFIG.GH_BRANCH}/archive/belair.csv`,
+    readme:    `${repo}#readme`,
     bls:       CONFIG.BLS_URL,
     site:      CONFIG.SITE_URL
   };
