@@ -437,7 +437,7 @@
     </div>
     <div>
       <h4>The data</h4>
-      <p class="sig">Schema: <code>date, store, item, category, unit, price, phase</code><br>Collected weekly since Jul 6, 2026 · Updated every Monday · <a data-link="csv" href="#">Download the CSV</a> · <a data-link="repo" data-link-text="repoShort" href="#">github.com/…/cart-index</a><br>Benchmark: <a data-link="bls" href="#">BLS CPI, food at home, West region</a> (monthly). BLS publishes no Sacramento-area CPI, so there is no official local series to compare against. That gap is the reason this index exists.</p>
+      <p class="sig">Schema: <code>date, store, item, category, unit, price, phase</code><br>Collected weekly since Jul 6, 2026 · Updated every Monday · <a data-link="csv" href="#">Download the CSV</a> · <a data-link="repo" data-link-text="repoShort" href="#">github.com/…/cart-index</a><br>Benchmark: <a data-link="bls" href="#">BLS CPI, food at home, West region</a> (monthly). BLS publishes no Sacramento-area CPI. Beginning October 2026 it will collect price data in the Sacramento region for the first time since 2018, but those observations feed national and regional aggregates rather than a published local index. That gap is the reason this index exists.</p>
     </div>
   </div>
 </footer>
@@ -460,7 +460,8 @@ const CONFIG = {
   DATA_PATH: "data/prices.csv",
 
   // --- the national reference series the index is compared against ---
-  // NOTE: BLS does NOT publish a Sacramento-area CPI. Nearest published options:
+  // NOTE: BLS publishes no Sacramento-area CPI. From Oct 2026 it collects Sacramento-region
+  //   data, but only into aggregates (US City Average, West, Pacific). Nearest published options:
   //   West region, food at home (monthly)  <- current setting
   //   https://www.bls.gov/regions/west/news-release/consumerpriceindex_sanfrancisco.htm  (SF, bimonthly)
   //   https://fred.stlouisfed.org/series/CUUR0000SAF11  (U.S. city average, monthly)
