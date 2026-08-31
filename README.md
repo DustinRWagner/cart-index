@@ -2,7 +2,7 @@
 
 **A hyperlocal grocery price index for Folsom, California. The same 14-item basket, priced every Monday at three Folsom stores from each retailer's own published prices. Fully open source.**
 
-The Bureau of Labor Statistics publishes no Consumer Price Index for the Sacramento area at any frequency. The nearest official benchmarks are the West region food-at-home CPI (monthly) and the San Francisco area CPI (every other month), both far coarser than a single city. The Cart Index measures food prices in Folsom, weekly, store by store, and publishes every observation. It answers two questions no official statistic answers:
+The Bureau of Labor Statistics publishes no Consumer Price Index for the Sacramento area. Beginning in October 2026, BLS will collect price data in El Dorado, Placer, Sacramento and Yolo Counties for the first time since the 2018 sample revision, but those observations are folded into the U.S. City Average, West Region, West Size Class B/C and Pacific Division indexes rather than published as a Sacramento series. The nearest official benchmarks remain the West region food-at-home CPI (monthly) and the San Francisco area CPI (every other month), both far coarser than a single city. The Cart Index measures food prices in Folsom, weekly, store by store, and publishes every observation. It answers two questions no official statistic answers:
 
 1. **What is grocery inflation in Folsom, this week?**
 2. **Which store has the cheapest full cart right now, and what is switching worth per year?**
