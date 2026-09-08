@@ -654,9 +654,9 @@ function drawChart(D, mode){
   const storeColors = ["#d7263d","#1e7a4a","#c79a00","#3557a0","#8a4fbf"];
   const datasets = mode==="composite"
     ? [{label:"Composite Cart Index", data:D.composite, borderColor:"#141414", backgroundColor:"#141414",
-        borderWidth:3.5, pointRadius:4, pointBackgroundColor:"#ffd23f", pointBorderColor:"#141414", pointBorderWidth:2, tension:.25}]
+        borderWidth:3.5, pointRadius:4, pointBackgroundColor:"#ffd23f", pointBorderColor:"#141414", pointBorderWidth:2, tension:0}]
     : D.stores.map((s,i)=>({label:s.split(" - ")[0], data:D.byStore[s], borderColor:storeColors[i%5],
-        backgroundColor:storeColors[i%5], borderWidth:2.5, pointRadius:3, tension:.25}));
+        backgroundColor:storeColors[i%5], borderWidth:2.5, pointRadius:3, tension:0}));
   if(chart) chart.destroy();
   chart = new Chart($("chart"), {
     type:"line",
