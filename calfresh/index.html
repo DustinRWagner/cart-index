@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Keeps this page out of search results during the test. Delete this line on Nov 16. -->
+<meta name="robots" content="noindex">
+<title>CalFresh for FLC Students · The Cart Index</title>
+<meta name="description" content="Since June 1, 2026, FLC students enrolled at least half-time in a degree program meet CalFresh's student rule. Who may qualify, and where to apply or get free help.">
+<meta property="og:title" content="CalFresh for FLC students">
+<meta property="og:description" content="Since June 1, 2026, FLC students enrolled at least half-time in a degree program meet CalFresh's student rule.">
+<meta property="og:type" content="website">
+<!-- No canonical link on purpose: it would erase the ?src= channel tags in GoatCounter. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23141414'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-size='22' font-weight='bold' fill='%23ffd23f' text-anchor='middle'%3E%24%3C/text%3E%3C/svg%3E">
+
+<script>
+  /* 50/50 version assignment, saved in this browser so a returning visitor sees the same version. */
+  (function () {
+    var v = null;
+    try { v = localStorage.getItem('cf_version'); } catch (e) {}
+    if (v !== 'A' && v !== 'B') {
+      v = Math.random() < 0.5 ? 'A' : 'B';
+      try { localStorage.setItem('cf_version', v); } catch (e) {}
+    }
+    document.documentElement.setAttribute('data-version', v);
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Libre+Franklin:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;
+    --paper:#ffffff;
+    --receipt:#fbf8ef;
+    --yellow:#ffd23f;
+    --red:#d7263d;
+    --gray:#6b675e;
+    --rule:2px solid var(--ink);
+    --font-display:'Anton', 'Arial Narrow', sans-serif;
+    --font-body:'Libre Franklin', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono:'IBM Plex Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--ink);}
+  :focus-visible{outline:3px dashed var(--red); outline-offset:3px;}
+  .wrap{max-width:1160px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    border-bottom:var(--rule);
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .masthead .wrap{display:flex; justify-content:space-between; align-items:center; padding-top:10px; padding-bottom:10px; gap:16px; flex-wrap:wrap;}
+  .masthead a{text-decoration:none; border-bottom:2px solid var(--yellow);}
+  .masthead a:hover{background:var(--yellow);}
+
+  /* ---------- hero ---------- */
+  .hero{border-bottom:var(--rule); overflow:hidden;}
+  .hero .wrap{
+    display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+    gap:48px; align-items:center; padding-top:56px; padding-bottom:64px;
+  }
+  .eyebrow{
+    display:inline-block; font-family:var(--font-mono); font-size:12px;
+    letter-spacing:.14em; text-transform:uppercase;
+    background:var(--yellow); padding:4px 10px; border:2px solid var(--ink);
+    box-shadow:4px 4px 0 var(--ink); margin-bottom:22px;
+  }
+  h1.title{
+    font-family:var(--font-display); font-weight:400;
+    font-size:clamp(52px, 7.6vw, 96px); line-height:.95;
+    text-transform:uppercase; letter-spacing:.005em;
+  }
+  .dek{max-width:52ch; margin-top:18px; font-size:17px; color:#33312c;}
+  .dek strong{font-weight:800; color:var(--ink);}
+
+  /* awareness question */
+  .heard{
+    margin-top:26px; border:var(--rule); background:var(--receipt);
+    padding:14px 16px; display:flex; flex-wrap:wrap; align-items:center; gap:12px 18px;
+    max-width:560px;
+  }
+  .heard-q{flex:1 1 240px; font-weight:600; font-size:16px;}
+  .heard-choices{display:flex; gap:10px;}
+  .tag-btn{
+    font-family:var(--font-mono); font-size:13px; font-weight:600; cursor:pointer;
+    padding:7px 16px; border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink); transition:transform .06s ease, box-shadow .06s ease;
+  }
+  .tag-btn:hover{background:var(--yellow);}
+  .tag-btn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink);}
+  .heard-thanks{font-family:var(--font-mono); font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;}
+
+  /* the number */
+  .hero-number{display:flex; align-items:flex-end; gap:20px; margin-top:34px; flex-wrap:wrap;}
+  .amount{
+    font-family:var(--font-display); line-height:.85; position:relative; isolation:isolate;
+    padding:6px 10px 2px 4px;
+  }
+  .amount .whole{font-size:clamp(84px,10vw,132px);}
+  .amount::after{
+    content:""; position:absolute; left:0; right:0; bottom:6px; height:34%;
+    background:var(--yellow); z-index:-1;
+  }
+  .hero-meta{padding-bottom:14px;}
+  .chip{
+    display:inline-block; font-family:var(--font-mono); font-weight:600; font-size:15px;
+    padding:5px 12px; border:2px solid var(--ink); background:var(--paper);
+  }
+  .hero-meta .base-note{display:block; margin-top:10px; font-family:var(--font-mono); font-size:12px; color:var(--gray);}
+  .money-line{max-width:52ch; margin-top:16px; font-size:17px; color:#33312c;}
+
+  /* the one sentence that differs between versions */
+  .vb{display:none;}
+  html[data-version="B"] .vb{display:inline;}
+
+  /* actions */
+  .actions{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap:16px; margin-top:30px; max-width:600px;}
+  .btn{
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    min-height:64px; padding:12px 18px;
+    font-family:var(--font-display); font-weight:400; font-size:22px; line-height:1.05;
+    text-transform:uppercase; letter-spacing:.01em; text-decoration:none; color:var(--ink);
+    border:var(--rule); box-shadow:5px 5px 0 var(--ink);
+    transition:transform .06s ease, box-shadow .06s ease;
+  }
+  .btn:active{transform:translate(3px,3px); box-shadow:2px 2px 0 var(--ink);}
+  .btn-primary{background:var(--yellow);}
+  .btn-secondary{background:var(--paper);}
+  .btn-secondary:hover{background:var(--yellow);}
+  .helpline{
+    margin-top:22px; font-family:var(--font-mono); font-size:12.5px; color:var(--gray);
+    max-width:64ch; line-height:1.75;
+  }
+  .helpline a{color:var(--ink); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px;}
+  .helpline a:hover{background:var(--yellow);}
+
+  /* ---------- receipt (signature) ---------- */
+  .receipt-slot{display:flex; justify-content:center;}
+  .receipt{
+    width:min(340px,100%); background:var(--receipt); color:var(--ink);
+    font-family:var(--font-mono); font-size:13px; line-height:1.65;
+    padding:26px 22px 34px; transform:rotate(1.6deg);
+    box-shadow:10px 14px 0 rgba(20,20,20,.16);
+    position:relative;
+    background-image:repeating-linear-gradient(0deg, rgba(20,20,20,.022) 0 1px, transparent 1px 3px);
+  }
+  .receipt::after{
+    content:""; position:absolute; left:0; right:0; bottom:-12px; height:12px;
+    background:
+      linear-gradient(-45deg, transparent 8px, var(--receipt) 0) 0 0/16px 16px repeat-x,
+      linear-gradient(45deg, transparent 8px, var(--receipt) 0) 8px 0/16px 16px repeat-x;
+  }
+  .receipt::before{
+    content:""; position:absolute; left:0; right:0; top:-12px; height:12px;
+    background:
+      linear-gradient(-135deg, transparent 8px, var(--receipt) 0) 0 0/16px 16px repeat-x,
+      linear-gradient(135deg, transparent 8px, var(--receipt) 0) 8px 0/16px 16px repeat-x;
+  }
+  .receipt h2{font-size:16px; font-weight:600; text-align:center; letter-spacing:.14em;}
+  .receipt .sub{text-align:center; font-size:11px; letter-spacing:.08em; color:#45423a;}
+  .receipt hr{border:none; border-top:1.5px dashed #9a958a; margin:12px 0;}
+  .receipt .line{display:flex; justify-content:space-between; gap:10px;}
+  .receipt .line span:last-child{font-weight:600; white-space:nowrap;}
+  .receipt .save{background:var(--yellow); margin:10px -6px; padding:8px 6px; border:1.5px solid var(--ink);}
+  .receipt .barcode{
+    height:44px; margin:16px auto 6px; width:82%;
+    background:repeating-linear-gradient(90deg,
+      var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 7px, transparent 7px 9px,
+      var(--ink) 9px 10px, transparent 10px 14px, var(--ink) 14px 18px, transparent 18px 20px);
+  }
+  .receipt .thanks{text-align:center; font-size:11px; letter-spacing:.18em;}
+
+  /* ---------- sections ---------- */
+  section{border-bottom:var(--rule); padding:64px 0;}
+  h2.sec{
+    font-family:var(--font-display); font-weight:400; text-transform:uppercase;
+    font-size:clamp(32px,4.4vw,52px); line-height:1; margin-bottom:14px;
+  }
+  .sec-dek{max-width:62ch; color:#33312c; margin-bottom:36px;}
+
+  .criteria{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .crit{border-top:6px solid var(--ink); padding-top:14px;}
+  .crit .box{display:block; width:26px; height:26px; border:var(--rule); background:var(--paper); box-shadow:3px 3px 0 var(--ink);}
+  .crit h3{font-size:16px; font-weight:800; margin:14px 0 6px;}
+  .crit p{font-size:14px; color:#33312c;}
+  .crit a{color:inherit; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px;}
+  .crit a:hover{background:var(--yellow);}
+  .method-note{
+    margin-top:34px; font-family:var(--font-mono); font-size:13px; border:2px dashed var(--ink);
+    padding:16px 18px; max-width:76ch; background:var(--receipt);
+  }
+
+  /* ---------- footer ---------- */
+  footer{padding:40px 0 60px; font-size:14px;}
+  footer .wrap{display:grid; grid-template-columns:1.4fr 1fr; gap:36px;}
+  footer h4{font-family:var(--font-display); font-weight:400; text-transform:uppercase; font-size:22px; margin-bottom:8px;}
+  footer .sig{font-family:var(--font-mono); font-size:12px; color:var(--gray); margin-top:12px; line-height:1.8;}
+  footer a{color:var(--ink); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px;}
+  footer a:hover{background:var(--yellow);}
+
+  @media (max-width:900px){
+    .hero .wrap{grid-template-columns:minmax(0,1fr); gap:44px; padding-top:40px;}
+    .criteria{grid-template-columns:1fr;}
+    footer .wrap{grid-template-columns:1fr;}
+  }
+  @media (max-width:560px){ .masthead .mid{display:none;} }
+  @media (prefers-reduced-motion: reduce){
+    .tag-btn, .btn{transition:none;}
+  }
+</style>
+
+<!-- privacy-friendly analytics (no cookies, no personal data). Never remove. -->
+<script data-goatcounter="https://cartindex.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <span>The Cart Index · Folsom, CA</span>
+    <span class="mid">CalFresh guide for FLC students</span>
+    <a href="../">Cart Index home</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">For Folsom Lake College students</span>
+      <h1 class="title">CalFresh<br>for FLC students</h1>
+      <p class="dek">New since June 1, 2026: if you are enrolled <strong>at least half-time</strong> (usually 6 units) in an <strong>associate's or bachelor's degree program</strong> at FLC, CalFresh's student rule no longer blocks you.</p>
+
+      <div class="heard" id="heard">
+        <p class="heard-q">Before today, had you heard about this change?</p>
+        <div class="heard-choices">
+          <button class="tag-btn" type="button" data-heard="yes">Yes</button>
+          <button class="tag-btn" type="button" data-heard="no">No</button>
+        </div>
+      </div>
+
+      <div class="hero-number">
+        <div class="amount" aria-label="Up to 306 dollars a month"><span class="whole">$306</span></div>
+        <div class="hero-meta">
+          <span class="chip">per month, max</span>
+          <span class="base-note">One person · from Oct 1, 2026</span>
+        </div>
+      </div>
+      <p class="money-line">CalFresh gives up to $306 a month for groceries for a single person.<span class="vb"> At Folsom prices, that buys a 14-item basket of staples like milk, eggs, chicken, and bread 5.3 times a month (Cart Index, week of Sep 21, 2026).</span></p>
+
+      <div class="actions">
+        <a class="btn btn-primary" data-action="apply" href="https://benefitscal.com/" target="_blank" rel="noopener">Apply on BenefitsCal</a>
+        <a class="btn btn-secondary" data-action="help" href="https://www.getcalfresh.org/" target="_blank" rel="noopener">Get free help from a real person</a>
+      </div>
+      <p class="helpline">GetCalFresh offers help by chat, text, or email. Or contact Sacramento Food Bank &amp; Family Services: call <a data-action="help" href="tel:+19167790052">(916) 779-0052</a>, text FOOD to <a data-action="help" href="sms:74544?&amp;body=FOOD">74544</a>, or email <a data-action="help" href="mailto:calfresh@sacramentofoodbank.org">calfresh@sacramentofoodbank.org</a>.</p>
+    </div>
+
+    <div class="receipt-slot">
+      <div class="receipt" role="img" aria-label="Receipt-style summary: CalFresh is grocery aid, up to $306 a month for one person, free to apply, does not affect financial aid, and the county decides eligibility. The student rule changed June 1, 2026.">
+        <h2>CALFRESH</h2>
+        <p class="sub">FOR FLC STUDENTS · FALL 2026</p>
+        <hr>
+        <div class="line"><span>BENEFIT</span><span>GROCERIES</span></div>
+        <div class="line"><span>MONTHLY MAX, 1 PERSON</span><span>$306.00</span></div>
+        <div class="line"><span>COST TO APPLY</span><span>$0.00</span></div>
+        <div class="line"><span>FINANCIAL AID</span><span>UNAFFECTED</span></div>
+        <div class="line"><span>WHO DECIDES</span><span>THE COUNTY</span></div>
+        <div class="save">
+          <div class="line"><span>STUDENT RULE CHANGED</span><span>06/01/2026</span></div>
+        </div>
+        <div class="line"><span>WHERE TO APPLY</span><span>BENEFITSCAL</span></div>
+        <div class="line"><span>FREE HELP</span><span>GETCALFRESH</span></div>
+        <hr>
+        <div class="barcode" aria-hidden="true"></div>
+        <p class="thanks">*** INFO, NOT A DECISION ***</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="qualify">
+  <div class="wrap">
+    <h2 class="sec">Who may qualify</h2>
+    <p class="sec-dek">The student rule is one test. Income and household rules still apply, and the county makes the final decision.</p>
+    <div class="criteria">
+      <div class="crit">
+        <span class="box" aria-hidden="true"></span>
+        <h3>Enrolled at least half-time</h3>
+        <p>You are enrolled at least half-time (usually 6 units) in an associate's or bachelor's degree program.</p>
+      </div>
+      <div class="crit">
+        <span class="box" aria-hidden="true"></span>
+        <h3>Under the income limit</h3>
+        <p>Your income is under the CalFresh limit. <a href="https://www.getcalfresh.org/" target="_blank" rel="noopener">GetCalFresh</a> lists the current limits.</p>
+      </div>
+      <div class="crit">
+        <span class="box" aria-hidden="true"></span>
+        <h3>Under 22 and living with a parent?</h3>
+        <p>You apply with that parent's household.</p>
+      </div>
+    </div>
+    <p class="method-note">CalFresh does not affect your financial aid.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h4>About this page</h4>
+      <p>A student project by Dustin Wagner, creator of the <a href="../">Cart Index</a>.</p>
+      <p class="sig">This page gives information, not eligibility decisions; the county decides.<br>It collects no personal information.</p>
+    </div>
+    <div>
+      <h4>Already looked into it?</h4>
+      <p class="sig">Take the <a id="checkin" href="https://forms.gle/H3FguDSPHUM7267cA" target="_blank" rel="noopener">30-second anonymous check-in</a>.<br>No names or emails are collected.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var version = document.documentElement.getAttribute('data-version') || 'A';
+
+  function getFlag(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function setFlag(k) { try { localStorage.setItem(k, '1'); } catch (e) {} }
+
+  /* Events wait in a queue until GoatCounter's script has loaded. */
+  var queue = [];
+  function ready() { return window.goatcounter && typeof window.goatcounter.count === 'function'; }
+  function flush() {
+    if (!ready()) return;
+    while (queue.length) {
+      var name = queue.shift();
+      window.goatcounter.count({ path: name, title: name, event: true });
+    }
+  }
+  function send(name) { queue.push(name); flush(); }
+  function sendOnce(flag, name) {
+    if (getFlag(flag)) return;
+    setFlag(flag);
+    send(name);
+  }
+  var tries = 0;
+  var timer = setInterval(function () {
+    flush();
+    tries++;
+    if (ready() || tries > 150) clearInterval(timer);
+  }, 100);
+
+  /* view-A or view-B: once per browser, first visit */
+  sendOnce('cf_viewed', 'view-' + version);
+
+  /* Awareness question: once per browser */
+  var heard = document.getElementById('heard');
+  function thank() { heard.innerHTML = '<p class="heard-thanks">Thanks for answering.</p>'; }
+  if (getFlag('cf_heard')) {
+    thank();
+  } else {
+    var choices = heard.querySelectorAll('button[data-heard]');
+    for (var i = 0; i < choices.length; i++) {
+      choices[i].addEventListener('click', function () {
+        sendOnce('cf_heard', 'heard-' + this.getAttribute('data-heard'));
+        thank();
+      });
+    }
+  }
+
+  /* Actions: act-A/act-B once per browser (the test outcome); apply-/help- on every click */
+  var actions = document.querySelectorAll('[data-action]');
+  for (var j = 0; j < actions.length; j++) {
+    actions[j].addEventListener('click', function () {
+      sendOnce('cf_acted', 'act-' + version);
+      send(this.getAttribute('data-action') + '-' + version);
+    });
+  }
+
+  /* Check-in link: every click */
+  document.getElementById('checkin').addEventListener('click', function () { send('checkin'); });
+})();
+</script>
+</body>
+</html>
