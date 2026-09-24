@@ -75,7 +75,17 @@ Why the value-pack tier: Walmart offers no conventional store-brand fresh bonele
 
 ### Price-type rule (applies to every item)
 
-The recorded price is the price displayed on the retailer's own website for the selected Folsom store, including free loyalty-program pricing where the retailer displays it by default (Safeway for U, which any shopper can join at no cost). Clip-to-activate digital coupons and paid-membership prices are never used. The rule follows CPI practice: record the price generally available to consumers, applied with the identical instrument every week.
+The recorded price is the price displayed on the retailer's own website for the selected Folsom store, including free loyalty-program pricing where the retailer displays it by default (Safeway for U, which any shopper can join at no cost). Target's displayed price is its base price; Target Circle member prices are not shown by default and are not recorded. Clip-to-activate digital coupons and paid-membership prices are never used. The rule follows CPI practice: record the price generally available to consumers, applied with the identical instrument every week.
+
+### Archival records of the source listings (adopted 2026-09-23, effective 2026-09-28)
+
+A CSV is a transcription of what the collector saw, not the listing itself, and a retailer's page shows only today's price. Without a preserved copy of the original listing, no reader can verify a past observation. Beginning with the collection of Monday, 2026-09-28, every one of the 42 weekly observations is captured as a dated screen image of the product page, showing the product name, the package size, and the price.
+
+- **Where they live:** `archive/listings/`, one folder per collection date (`archive/listings/2026-09-28/`), in this repository.
+- **Why the same repository:** the images are committed in the same commit as that week's prices, so a price and the evidence behind it share a single timestamp recorded by GitHub rather than by the author. A separate repository would split that history in two.
+- **How they map to the data:** files are named `store_itemid`, for example `safeway_eggs.jpg` or `target_coke.jpg`. Any row in `data/prices.csv` locates its own evidence from `date` + `store` + `item_id`.
+- **Format and size discipline:** JPEG, visible screen area rather than full scrolling page, cropped to show product, size, and price. That runs roughly 8 MB per week, about 400 MB per year. When `archive/listings/` approaches 700 MB, the oldest completed year moves to a separate archive repository and this section records the move. GitHub Pages sites are expected to stay under 1 GB.
+- **What the archive does not cover:** the five official weeks of 2026-08-24 through 2026-09-21, collected before this rule and having no captures. That boundary is distinct from the pilot boundary and is recorded in the revision log. No published price was changed when the rule was adopted.
 
 ### Fallback rules (written once, followed forever)
 
@@ -90,7 +100,7 @@ Collections for the seven Mondays of 2026-07-06 through 2026-08-17 predate this 
 ## Methodology
 
 - **Measurement definition:** the price shown on each retailer's own website with the named Folsom store selected (pickup mode), recorded every Monday morning in a fixed store order, under the price-type rule above.
-- **Honest caveat, stated up front:** retailers' online prices can differ from in-store shelf prices, and Safeway's displayed prices reflect its free membership program. That affects the level of a cart total. The index, however, measures change over time using the identical instrument every week, which is what makes week-over-week and cumulative inflation numbers meaningful. Consistency of instrument over perfection of instrument. Say exactly this when asked.
+- **Honest caveat, stated up front:** retailers' online prices can differ from in-store shelf prices, and Safeway's displayed prices reflect its free membership program. Online prices can also change more than once within a day, so each Monday reading is a snapshot of that morning rather than the week's price. That affects the level of a cart total. The index, however, measures change over time using the identical instrument every week, which is what makes week-over-week and cumulative inflation numbers meaningful. Consistency of instrument over perfection of instrument. Say exactly this when asked.
 - **Weighted Laspeyres index**, base week = 100, BLS-style food-at-home category weights (editable in `CONFIG.WEIGHTS` in `index.html`): Meat & Poultry 0.25, Pantry 0.22, Dairy & Eggs 0.20, Produce 0.20, Beverages 0.13.
 
   `Index_t = 100 x Sum_c  w_c x ( Sum of category-c prices at week t / Sum of category-c prices at base week )`
@@ -104,8 +114,8 @@ Automated scraping of grocery sites (a) violates most retailers' terms of servic
 ## Weekly workflow (about 30 minutes, fully remote, zero coding)
 
 1. Monday morning, open the three sites with the Folsom stores selected. Same store order every week.
-2. Record the 42 prices under the item spec and price-type rule above.
-3. On github.com, open `data/prices.csv`, click the pencil icon (edit in place), paste the new week's 42 rows at the bottom with `official` in the `phase` column, and commit. The live site updates itself within a minute or two.
+2. Record the 42 prices under the item spec and price-type rule above, capturing each listing as `store_itemid.jpg` into `archive/listings/YYYY-MM-DD/` as you go.
+3. On github.com, upload that date's capture folder, open `data/prices.csv`, click the pencil icon (edit in place), paste the new week's 42 rows at the bottom with `official` in the `phase` column and the matching `item_id`, and commit the prices and the captures together. The live site updates itself within a minute or two.
 4. Post the Monday number (see `GET_IT_NOTICED.md`).
 
 ## "But isn't this just a GitHub thing?" No.
@@ -125,20 +135,24 @@ GitHub plays two invisible roles: it stores the data publicly, which is what mak
 cart-index/
 ├── index.html          # the entire dashboard (CONFIG at the top of the <script>)
 ├── og-image.png        # social link preview image
-├── GET_IT_NOTICED.md   # the launch and promotion playbook
+├── CNAME               # custom domain for GitHub Pages
+├── calfresh/           # separate CalFresh outreach subsite
 ├── data/
 │   └── prices.csv      # every panel observation, pilot and official
 ├── archive/
-│   └── belair.csv      # pilot observations from the store removed at launch
+│   ├── belair.csv      # pilot observations from the store removed at launch
+│   └── listings/       # dated screen captures of every source listing
+│       └── 2026-09-28/ # one folder per collection date: safeway_eggs.jpg, ...
 └── README.md
 ```
 
+
 ```csv
-date,store,item,category,unit,price,phase
-2026-08-24,Walmart - Riley St,Cheerios,Pantry,18 oz,4.47,official
+date,store,item,category,unit,price,phase,item_id
+2026-08-24,Walmart - Riley St,Cheerios,Pantry,18 oz,4.47,official,cheerios
 ```
 
-`date` is the Monday of collection (`YYYY-MM-DD`). `category` must match a `CONFIG.WEIGHTS` key. `phase` is `official` for index rows or `pilot` for pre-protocol rows. No commas inside fields.
+`date` is the Monday of collection (`YYYY-MM-DD`). `category` must match a `CONFIG.WEIGHTS` key. `phase` is `official` for index rows or `pilot` for pre-protocol rows. `item_id` is a short filesystem-safe key for the item, identical to the name used in the archive images, and is appended last so the column order of the original schema is unchanged. The 14 keys are `milk`, `eggs`, `cheddar`, `chicken`, `beef`, `bread`, `bananas`, `carrots`, `romaine`, `spaghetti`, `cheerios`, `peanutbutter`, `coke`, `coffee`. No commas inside fields.
 
 ## Impact metrics (log these in an IMPACT.md from day one)
 
