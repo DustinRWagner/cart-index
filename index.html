@@ -391,7 +391,7 @@
   <div class="wrap">
     <p class="kicker">03 · The shelf</p>
     <h2 class="sec">On the shelf this week</h2>
-    <p class="sec-dek">Average shelf price across all tracked stores for each basket item, with the week-over-week move. These are the tags shoppers actually see.</p>
+    <p class="sec-dek">Average listed price across all tracked stores for each basket item, with the week-over-week move. These are the prices each retailer publishes for its Folsom store.</p>
     <div class="shelf" id="shelf-grid"></div>
   </div>
 </section>
@@ -402,12 +402,22 @@
     <h2 class="sec">How it's measured</h2>
     <div class="method">
       <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named products, at the same stores, every week. Each item is defined by a written specification (brand tier, cut, package size, and price type), so every observation is like-for-like. Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted. Full specifications are in the <a data-link="readme" href="#">README</a>.</p></div>
-      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website or app, with the exact Folsom store location selected. Prices are recorded as displayed for that store, including free loyalty-program pricing where the retailer shows it (Safeway for U); clip-to-activate coupons and paid-membership prices are never used.</p></div>
+      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website or app, with the exact Folsom store location selected. Prices are recorded as displayed for that store, including free loyalty-program pricing where the retailer shows it (Safeway for U); clip-to-activate coupons and paid-membership prices are never used, and Target's displayed price is its base price, with no Circle offer applied. From Sept 28, 2026, a dated screen capture of every listing is committed alongside the week's prices in <a data-link="listings" href="#"><code>archive/listings/</code></a>, so any published price can be checked against the page it was read from.</p></div>
       <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index, not a raw price average.</p></div>
-      <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>. Anyone can audit the math, rebuild the index, or extend it to their own city.</p></div>
+      <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>, beside the <a data-link="listings" href="#">archived listing images</a> it was read from. Anyone can audit the math, rebuild the index, or extend it to their own city.</p></div>
     </div>
     <details class="method-note revision-log" id="revisions">
-      <summary><strong>REVISION LOG</strong> · 2 entries</summary>
+      <summary><strong>REVISION LOG</strong> · 3 entries</summary>
+      <p><span class="rev-date">2026-09-23</span> · <strong>Archival capture of source listings adopted, effective Mon, Sept 28, 2026; <code>item_id</code> added to the schema.</strong>
+      Adopted today and taking effect with the collection of Monday, Sept 28, 2026: a dated screen capture of every price listing
+      is committed alongside that week&rsquo;s prices in <a data-link="listings" href="#"><code>archive/listings/</code></a>, all 42
+      observations, so any published figure can be checked against the page it was read from. Because the images ship in the same
+      commit as the data, each price and its evidence share one timestamp. Five official weeks already published (Aug 24 through
+      Sept 21) precede the rule and have no captures; that boundary is separate from the pilot boundary below, and no published
+      price changed when the rule was adopted. The CSV gains an <code>item_id</code> column, a short key matching the capture
+      filenames (<code>safeway_eggs</code>, <code>target_coke</code>), appended last so existing columns are unchanged. Also
+      recorded: online prices can change more than once within a day, so each Monday reading is a snapshot of that morning rather
+      than the week&rsquo;s price; and Target&rsquo;s displayed price is its base price, with no Circle member offer applied.</p>
       <p><span class="rev-date">2026-08-22</span> · <strong>Collection protocol adopted; official series defined.</strong>
       A written protocol now fixes every item specification: brand tier, cut, and package size for both meat items;
       per-banana pricing (the only unit all three stores display); normalization of Safeway’s 22 oz loaf to a 20 oz
@@ -437,7 +447,7 @@
     </div>
     <div>
       <h4>The data</h4>
-      <p class="sig">Schema: <code>date, store, item, category, unit, price, phase</code><br>Collected weekly since Jul 6, 2026 · Updated every Monday · <a data-link="csv" href="#">Download the CSV</a> · <a data-link="repo" data-link-text="repoShort" href="#">github.com/…/cart-index</a><br>Benchmark: <a data-link="bls" href="#">BLS CPI, food at home, West region</a> (monthly). BLS publishes no Sacramento-area CPI. Beginning October 2026 it will collect price data in the Sacramento region for the first time since 2018, but those observations feed national and regional aggregates rather than a published local index. That gap is the reason this index exists.</p>
+      <p class="sig">Schema: <code>date, store, item, category, unit, price, phase, item_id</code><br>Collected weekly since Jul 6, 2026 · Updated every Monday · <a data-link="csv" href="#">Download the CSV</a> · <a data-link="repo" data-link-text="repoShort" href="#">github.com/…/cart-index</a><br>Benchmark: <a data-link="bls" href="#">BLS CPI, food at home, West region</a> (monthly). BLS publishes no Sacramento-area CPI. Beginning October 2026 it will collect price data in the Sacramento region for the first time since 2018, but those observations feed national and regional aggregates rather than a published local index. That gap is the reason this index exists.</p>
     </div>
   </div>
 </footer>
@@ -483,6 +493,7 @@ const LINKS = (() => {
     rawCsv:    `https://raw.githubusercontent.com/${CONFIG.GH_USER}/${CONFIG.GH_REPO}/${CONFIG.GH_BRANCH}/${CONFIG.DATA_PATH}`,
     mailto:    `mailto:${CONFIG.CONTACT_EMAIL}?subject=${encodeURIComponent("The Cart Index")}`,
     archiveCsv:`${repo}/blob/${CONFIG.GH_BRANCH}/archive/belair.csv`,
+    listings:  `${repo}/tree/${CONFIG.GH_BRANCH}/archive/listings`,
     readme:    `${repo}#readme`,
     bls:       CONFIG.BLS_URL,
     site:      CONFIG.SITE_URL
@@ -513,9 +524,9 @@ const fmtWeek = iso => {
 
 function parseCSV(text){
   return text.trim().split(/\r?\n/).slice(1).map(l=>{
-    const [date,store,item,category,unit,price,phase] = l.split(",");
+    const [date,store,item,category,unit,price,phase,item_id] = l.split(",");
     return {date,store,item,category,unit,price:parseFloat(price),
-            phase:(phase||"official").trim()};
+            phase:(phase||"official").trim(), item_id:(item_id||"").trim()};
   }).filter(r=>r.date && !isNaN(r.price));
 }
 
