@@ -31,7 +31,7 @@ Any row in the price file locates its own evidence from `date` + `store` + `item
 
 ## What each capture shows
 
-The product page as displayed for the named Folsom store, with the product name, the package size, and the price visible. Captures are committed in the same commit as that week's prices, so a price and the evidence behind it carry one timestamp recorded by GitHub rather than by the author.
+The product page as displayed for the named Folsom store, with the product name, the package size, and the price visible. Captures are committed on the same day as the prices they support, in an adjacent commit, so the evidence and the data share one history and both timestamps are recorded by GitHub rather than by the author.
 
 ## Coverage
 
