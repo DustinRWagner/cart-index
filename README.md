@@ -82,7 +82,7 @@ The recorded price is the price displayed on the retailer's own website for the 
 A CSV is a transcription of what the collector saw, not the listing itself, and a retailer's page shows only today's price. Without a preserved copy of the original listing, no reader can verify a past observation. Beginning with the collection of Monday, 2026-09-28, every one of the 42 weekly observations is captured as a dated screen image of the product page, showing the product name, the package size, and the price.
 
 - **Where they live:** `archive/listings/`, one folder per collection date (`archive/listings/2026-09-28/`), in this repository.
-- **Why the same repository:** the images are committed in the same commit as that week's prices, so a price and the evidence behind it share a single timestamp recorded by GitHub rather than by the author. A separate repository would split that history in two.
+- **Why the same repository:** the captures and the prices they support are committed on the same day, in adjacent commits, so the evidence sits in the same history as the data and both timestamps are recorded by GitHub rather than by the author. A separate repository would split that history in two.
 - **How they map to the data:** files are named `store_itemid`, for example `safeway_eggs.jpg` or `target_coke.jpg`. Any row in `data/prices.csv` locates its own evidence from `date` + `store` + `item_id`.
 - **Format and size discipline:** JPEG, visible screen area rather than full scrolling page, cropped to show product, size, and price. That runs roughly 8 MB per week, about 400 MB per year. When `archive/listings/` approaches 700 MB, the oldest completed year moves to a separate archive repository and this section records the move. GitHub Pages sites are expected to stay under 1 GB.
 - **What the archive does not cover:** the five official weeks of 2026-08-24 through 2026-09-21, collected before this rule and having no captures. That boundary is distinct from the pilot boundary and is recorded in the revision log. No published price was changed when the rule was adopted.
@@ -115,7 +115,7 @@ Automated scraping of grocery sites (a) violates most retailers' terms of servic
 
 1. Monday morning, open the three sites with the Folsom stores selected. Same store order every week.
 2. Record the 42 prices under the item spec and price-type rule above, capturing each listing as `store_itemid.jpg` into `archive/listings/YYYY-MM-DD/` as you go.
-3. On github.com, upload that date's capture folder, open `data/prices.csv`, click the pencil icon (edit in place), paste the new week's 42 rows at the bottom with `official` in the `phase` column and the matching `item_id`, and commit the prices and the captures together. The live site updates itself within a minute or two.
+3. On github.com, upload that date's capture folder, open `data/prices.csv`, click the pencil icon (edit in place), paste the new week's 42 rows at the bottom with `official` in the `phase` column and the matching `item_id`, and commit. The captures and the prices are two commits minutes apart, always on the same collection day. The live site updates itself within a minute or two.
 4. Post the Monday number (see `GET_IT_NOTICED.md`).
 
 ## "But isn't this just a GitHub thing?" No.

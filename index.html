@@ -402,17 +402,18 @@
     <h2 class="sec">How it's measured</h2>
     <div class="method">
       <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named products, at the same stores, every week. Each item is defined by a written specification (brand tier, cut, package size, and price type), so every observation is like-for-like. Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted. Full specifications are in the <a data-link="readme" href="#">README</a>.</p></div>
-      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website or app, with the exact Folsom store location selected. Prices are recorded as displayed for that store, including free loyalty-program pricing where the retailer shows it (Safeway for U); clip-to-activate coupons and paid-membership prices are never used, and Target's displayed price is its base price, with no Circle offer applied. From Sept 28, 2026, a dated screen capture of every listing is committed alongside the week's prices in <a data-link="listings" href="#"><code>archive/listings/</code></a>, so any published price can be checked against the page it was read from.</p></div>
-      <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index, not a raw price average.</p></div>
-      <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>, beside the <a data-link="listings" href="#">archived listing images</a> it was read from. Anyone can audit the math, rebuild the index, or extend it to their own city.</p></div>
+      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website, with the exact Folsom store location selected, exactly as displayed for that store. Free loyalty pricing counts where a retailer shows it by default (Safeway for U); Target displays its base price. Clip-to-activate coupons and paid memberships are never used.</p></div>
+      <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index rather than a raw price average. The weights sit in the site's configuration block, so anyone can inspect them or change them in a fork.</p></div>
+      <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>. From Sept 28, 2026, a dated screen capture of each listing is published the same day in <a data-link="listings" href="#"><code>archive/listings/</code></a>, so any price can be checked against the page it came from. Anyone can audit the math or rebuild the index.</p></div>
     </div>
     <details class="method-note revision-log" id="revisions">
       <summary><strong>REVISION LOG</strong> · 3 entries</summary>
       <p><span class="rev-date">2026-09-23</span> · <strong>Archival capture of source listings adopted, effective Mon, Sept 28, 2026; <code>item_id</code> added to the schema.</strong>
       Adopted today and taking effect with the collection of Monday, Sept 28, 2026: a dated screen capture of every price listing
-      is committed alongside that week&rsquo;s prices in <a data-link="listings" href="#"><code>archive/listings/</code></a>, all 42
-      observations, so any published figure can be checked against the page it was read from. Because the images ship in the same
-      commit as the data, each price and its evidence share one timestamp. Five official weeks already published (Aug 24 through
+      is published in <a data-link="listings" href="#"><code>archive/listings/</code></a>, all 42
+      observations, on the same day as the prices they support, so any published figure can be checked against the page it was
+      read from. Captures and prices are committed separately, minutes apart, and both timestamps are recorded by GitHub rather
+      than by the author. Five official weeks already published (Aug 24 through
       Sept 21) precede the rule and have no captures; that boundary is separate from the pilot boundary below, and no published
       price changed when the rule was adopted. The CSV gains an <code>item_id</code> column, a short key matching the capture
       filenames (<code>safeway_eggs</code>, <code>target_coke</code>), appended last so existing columns are unchanged. Also
