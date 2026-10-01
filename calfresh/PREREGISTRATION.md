@@ -1,5 +1,7 @@
 # Preregistration: FLC CalFresh Guide Message Test
 
+> **Superseded on 2026-10-01, before any data was collected.** The guide was never shared under this plan. The plan in effect is [`experiment/PREREGISTRATION.md`](experiment/PREREGISTRATION.md). This file is kept unchanged below for the record; see CHANGELOG.md.
+
 Author: Dustin Wagner
 Page: https://folsomcartindex.com/calfresh/
 Committed before any data collection. The commit timestamp in this repository is the record that this plan existed before the data window opened.
