@@ -7,7 +7,9 @@ The Bureau of Labor Statistics publishes no Consumer Price Index for the Sacrame
 1. **What is grocery inflation in Folsom, this week?**
 2. **Which store has the cheapest full cart right now, and what is switching worth per year?**
 
-Live site: `https://dustinrwagner.github.io/cart-index/` (custom domain optional; see setup)
+Live site: `https://folsomcartindex.com/`
+
+Also in this repository: **[the CalFresh guide for FLC students](calfresh/README.md)** (`folsomcartindex.com/calfresh/`), which shows CalFresh aid as Folsom groceries priced with this index, and its [preregistered experiment](calfresh/experiment/PREREGISTRATION.md).
 
 ---
 
@@ -136,7 +138,8 @@ cart-index/
 ├── index.html          # the entire dashboard (CONFIG at the top of the <script>)
 ├── og-image.png        # social link preview image
 ├── CNAME               # custom domain for GitHub Pages
-├── calfresh/           # separate CalFresh outreach subsite
+├── calfresh/           # CalFresh guide subsite (see calfresh/README.md)
+│   └── experiment/     # preregistration, results.csv, analysis.py, launch kit
 ├── data/
 │   └── prices.csv      # every panel observation, pilot and official
 ├── archive/
