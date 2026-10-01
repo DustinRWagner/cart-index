@@ -14,13 +14,21 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23141414'/%3E%3Ctext x='16' y='24' font-family='Georgia,serif' font-size='22' font-weight='bold' fill='%23ffd23f' text-anchor='middle'%3E%24%3C/text%3E%3C/svg%3E">
 
 <script>
-  /* 50/50 version assignment, saved in this browser so a returning visitor sees the same version. */
+  /* 50/50 version assignment, saved in this browser so a returning visitor sees the same version.
+     ?arm=A or ?arm=B forces a version for testing: nothing is stored and nothing is sent to GoatCounter. */
   (function () {
+    var forced = (/[?&]arm=([AB])(?:&|$)/i.exec(location.search) || [])[1];
     var v = null;
-    try { v = localStorage.getItem('cf_version'); } catch (e) {}
-    if (v !== 'A' && v !== 'B') {
-      v = Math.random() < 0.5 ? 'A' : 'B';
-      try { localStorage.setItem('cf_version', v); } catch (e) {}
+    if (forced) {
+      v = forced.toUpperCase();
+      window.goatcounter = { no_onload: true };
+      document.documentElement.setAttribute('data-test', '1');
+    } else {
+      try { v = localStorage.getItem('cf_version'); } catch (e) {}
+      if (v !== 'A' && v !== 'B') {
+        v = Math.random() < 0.5 ? 'A' : 'B';
+        try { localStorage.setItem('cf_version', v); } catch (e) {}
+      }
     }
     document.documentElement.setAttribute('data-version', v);
   })();
@@ -122,9 +130,16 @@
   .hero-meta .base-note{display:block; margin-top:10px; font-family:var(--font-mono); font-size:12px; color:var(--gray);}
   .money-line{max-width:52ch; margin-top:16px; font-size:17px; color:#33312c;}
 
-  /* the one sentence that differs between versions */
+  /* the framing that differs between versions: A leads with dollars, B with groceries */
   .vb{display:none;}
-  html[data-version="B"] .vb{display:inline;}
+  html[data-version="B"] .va{display:none;}
+  html[data-version="B"] .vb{display:block;}
+  html[data-version="B"] span.vb{display:inline;}
+  .amount .unit-word{font-size:clamp(40px,5vw,64px); margin-left:10px;}
+  .dollar-small{margin-top:8px; font-family:var(--font-mono); font-size:13px; color:var(--gray);}
+  .cart-list{margin-top:8px; font-size:14px; color:#33312c; max-width:56ch;}
+  .test-banner{display:none; background:var(--red); color:#fff; font-family:var(--font-mono); font-size:12px; letter-spacing:.06em; text-align:center; padding:6px 12px;}
+  html[data-test="1"] .test-banner{display:block;}
 
   /* actions */
   .actions{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap:16px; margin-top:30px; max-width:600px;}
@@ -227,6 +242,7 @@
         async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+<p class="test-banner">Test mode (?arm=): this visit is not counted.</p>
 
 <header class="masthead">
   <div class="wrap">
@@ -251,29 +267,66 @@
         </div>
       </div>
 
-      <div class="hero-number">
-        <div class="amount" aria-label="Up to 306 dollars a month"><span class="whole">$306</span></div>
-        <div class="hero-meta">
-          <span class="chip">per month, max</span>
-          <span class="base-note">One person · from Oct 1, 2026</span>
+      <!-- Version A: leads with dollars -->
+      <div class="va">
+        <div class="hero-number">
+          <div class="amount" aria-label="Up to 306 dollars a month"><span class="whole">$306</span></div>
+          <div class="hero-meta">
+            <span class="chip">per month, max</span>
+            <span class="base-note">One person · from Oct 1, 2026</span>
+          </div>
         </div>
+        <p class="money-line">CalFresh gives up to $306 a month for groceries for a single person.</p>
       </div>
-      <p class="money-line">CalFresh gives up to $306 a month for groceries for a single person.<span class="vb"> At Folsom prices, that buys a 14-item basket of staples like milk, eggs, chicken, and bread 5.3 times a month (Cart Index, week of Sep 21, 2026).</span></p>
+
+      <!-- Version B: leads with the same aid as Folsom groceries, priced with the Cart Index.
+           The numbers below are filled from ../data/prices.csv by the script at the bottom;
+           the values written here are the correct ones for the experiment's fixed price week. -->
+      <div class="vb">
+        <div class="hero-number">
+          <div class="amount" id="g-amount" aria-label="Up to 5 full carts of groceries a month"><span class="whole" id="g-carts">5</span><span class="whole unit-word">carts</span></div>
+          <div class="hero-meta">
+            <span class="chip">of groceries a month, max</span>
+            <span class="base-note">One person · from Oct 1, 2026</span>
+          </div>
+        </div>
+        <p class="money-line">CalFresh can cover up to <strong><span id="g-carts-word">five</span> full carts</strong> of the same 14 Folsom staples every month, with <span id="g-left">$26</span> to spare.</p>
+        <p class="cart-list">Each cart: a gallon of milk, a dozen eggs, cheddar, a pound each of chicken breast and ground beef, a banana, baby carrots, romaine, Cheerios, peanut butter, spaghetti, a loaf of bread, a 2-liter Coke, and a bag of coffee. Average cost <span id="g-avg">$55.94</span> across Walmart, Target, and Safeway in Folsom, week of <span id="g-week">Sep 28, 2026</span> (<a href="../">Cart Index</a>).</p>
+        <p class="dollar-small">That is up to $306 a month for one person.</p>
+      </div>
 
       <div class="actions">
         <a class="btn btn-primary" data-action="apply" href="https://benefitscal.com/" target="_blank" rel="noopener">Apply on BenefitsCal</a>
         <a class="btn btn-secondary" data-action="help" href="https://www.getcalfresh.org/" target="_blank" rel="noopener">Get free help from a real person</a>
       </div>
-      <p class="helpline">GetCalFresh offers help by chat, text, or email. Or contact Sacramento Food Bank &amp; Family Services: call <a data-action="help" href="tel:+19167790052">(916) 779-0052</a>, text FOOD to <a data-action="help" href="sms:74544?&amp;body=FOOD">74544</a>, or email <a data-action="help" href="mailto:calfresh@sacramentofoodbank.org">calfresh@sacramentofoodbank.org</a>.</p>
+      <p class="helpline">GetCalFresh offers help by chat, text, or email. Or contact Sacramento Food Bank &amp; Family Services: call <a data-action="help" href="tel:+19167790052">(916) 779-0052</a>, text FOOD to <a data-action="help" href="sms:74544?&amp;body=FOOD">74544</a>, or email <a data-action="help" href="mailto:calfresh@sacramentofoodbank.org">calfresh@sacramentofoodbank.org</a>. Statewide CalFresh info line: <a data-action="help" href="tel:+18778473663">1-877-847-3663</a>.</p>
     </div>
 
     <div class="receipt-slot">
-      <div class="receipt" role="img" aria-label="Receipt-style summary: CalFresh is grocery aid, up to $306 a month for one person, free to apply, does not affect financial aid, and the county decides eligibility. The student rule changed June 1, 2026.">
+      <div class="receipt va" role="img" aria-label="Receipt-style summary: CalFresh is grocery aid, up to $306 a month for one person, free to apply, does not affect financial aid, and the county decides eligibility. The student rule changed June 1, 2026.">
         <h2>CALFRESH</h2>
         <p class="sub">FOR FLC STUDENTS · FALL 2026</p>
         <hr>
         <div class="line"><span>BENEFIT</span><span>GROCERIES</span></div>
         <div class="line"><span>MONTHLY MAX, 1 PERSON</span><span>$306.00</span></div>
+        <div class="line"><span>COST TO APPLY</span><span>$0.00</span></div>
+        <div class="line"><span>FINANCIAL AID</span><span>UNAFFECTED</span></div>
+        <div class="line"><span>WHO DECIDES</span><span>THE COUNTY</span></div>
+        <div class="save">
+          <div class="line"><span>STUDENT RULE CHANGED</span><span>06/01/2026</span></div>
+        </div>
+        <div class="line"><span>WHERE TO APPLY</span><span>BENEFITSCAL</span></div>
+        <div class="line"><span>FREE HELP</span><span>GETCALFRESH</span></div>
+        <hr>
+        <div class="barcode" aria-hidden="true"></div>
+        <p class="thanks">*** INFO, NOT A DECISION ***</p>
+      </div>
+      <div class="receipt vb" id="g-receipt" role="img" aria-label="Receipt-style summary: CalFresh is grocery aid, up to 5 full carts of Folsom staples a month for one person, free to apply, does not affect financial aid, and the county decides eligibility. The student rule changed June 1, 2026.">
+        <h2>CALFRESH</h2>
+        <p class="sub">FOR FLC STUDENTS · FALL 2026</p>
+        <hr>
+        <div class="line"><span>BENEFIT</span><span>GROCERIES</span></div>
+        <div class="line"><span>MONTHLY MAX, 1 PERSON</span><span id="g-receipt-carts">5 CARTS</span></div>
         <div class="line"><span>COST TO APPLY</span><span>$0.00</span></div>
         <div class="line"><span>FINANCIAL AID</span><span>UNAFFECTED</span></div>
         <div class="line"><span>WHO DECIDES</span><span>THE COUNTY</span></div>
@@ -311,7 +364,7 @@
         <p>You apply with that parent's household.</p>
       </div>
     </div>
-    <p class="method-note">CalFresh does not affect your financial aid.</p>
+    <p class="method-note">CalFresh does not affect your financial aid. Official student rules: <a href="https://www.cdss.ca.gov/food-nutrition/calfresh/college-students" target="_blank" rel="noopener">California Department of Social Services, CalFresh for college students</a>.</p>
   </div>
 </section>
 
@@ -322,19 +375,81 @@
       <p>A student project by Dustin Wagner, creator of the <a href="../">Cart Index</a>.</p>
       <p class="sig">This page gives information, not eligibility decisions; the county decides.<br>It collects no personal information.</p>
     </div>
-    <div>
-      <h4>Already looked into it?</h4>
-      <p class="sig">Take the <a id="checkin" href="https://forms.gle/H3FguDSPHUM7267cA" target="_blank" rel="noopener">30-second anonymous check-in</a>.<br>No names or emails are collected.</p>
+    <div id="experiment">
+      <h4>About the two versions</h4>
+      <p class="sig">To learn which presentation is clearer, this page randomly shows one of two versions of the same information. No personal information is collected.</p>
+      <p class="sig">Results: collecting data until November 8, 2026. The plan was published before launch: <a href="https://github.com/dustinrwagner/cart-index/blob/main/calfresh/experiment/PREREGISTRATION.md" target="_blank" rel="noopener">preregistration</a> · <a href="https://github.com/dustinrwagner/cart-index/blob/main/calfresh/experiment/results.md" target="_blank" rel="noopener">results</a>.</p>
     </div>
   </div>
 </footer>
 
 <script>
 (function () {
-  var version = document.documentElement.getAttribute('data-version') || 'A';
+  var html = document.documentElement;
+  var version = html.getAttribute('data-version') || 'A';
+  var testMode = html.getAttribute('data-test') === '1';
 
+  /* ---------- grocery translation for version B, computed from the Cart Index ---------- */
+  /* During the experiment the translation uses one fixed price week, so every version-B visitor
+     sees the same message. After the end date it follows the latest official week automatically. */
+  var AID = 306;                                   /* FY2027 max for one person, from Oct 1, 2026 */
+  var EXPERIMENT_WEEK = '2026-09-28';              /* fixed week, see experiment/PREREGISTRATION.md */
+  var EXPERIMENT_END = Date.parse('2026-11-09T08:00:00Z');   /* Nov 8, 2026, 11:59 p.m. Pacific */
+  var WORDS = ['zero','one','two','three','four','five','six','seven','eight','nine','ten'];
+
+  function fmtWeek(iso) {
+    var p = iso.split('-').map(Number);
+    return new Date(p[0], p[1] - 1, p[2]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function setText(id, t) { var el = document.getElementById(id); if (el) el.textContent = t; }
+
+  function showGroceries(csv) {
+    var totals = {};                               /* totals[week][store] = 14-item basket cost */
+    csv.trim().split(/\r?\n/).slice(1).forEach(function (line) {
+      var f = line.split(',');                     /* date,store,item,category,unit,price,phase,item_id */
+      var price = parseFloat(f[5]);
+      if (!f[0] || isNaN(price) || (f[6] || '').trim() !== 'official') return;
+      totals[f[0]] = totals[f[0]] || {};
+      totals[f[0]][f[1]] = (totals[f[0]][f[1]] || 0) + price;
+    });
+    var weeks = Object.keys(totals).sort();
+    if (!weeks.length) return;
+    var week = (Date.now() <= EXPERIMENT_END && totals[EXPERIMENT_WEEK]) ? EXPERIMENT_WEEK : weeks[weeks.length - 1];
+    var stores = Object.keys(totals[week]);
+    var avg = stores.reduce(function (a, s) { return a + totals[week][s]; }, 0) / stores.length;
+    var carts = Math.floor(AID / avg);
+    var left = Math.round(AID - carts * avg);
+    var word = WORDS[carts] || String(carts);
+    setText('g-carts', String(carts));
+    setText('g-carts-word', word);
+    setText('g-left', '$' + left);
+    setText('g-avg', '$' + avg.toFixed(2));
+    setText('g-week', fmtWeek(week));
+    setText('g-receipt-carts', carts + ' CARTS');
+    var amt = document.getElementById('g-amount');
+    if (amt) amt.setAttribute('aria-label', 'Up to ' + carts + ' full carts of groceries a month');
+    var rc = document.getElementById('g-receipt');
+    if (rc) rc.setAttribute('aria-label', rc.getAttribute('aria-label').replace(/up to \d+ full carts/, 'up to ' + carts + ' full carts'));
+  }
+  if (window.fetch) {
+    fetch('../data/prices.csv', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) { if (t.indexOf('date,store') === 0) showGroceries(t); })
+      .catch(function () { /* keep the values written in the page */ });
+  }
+
+  /* ---------- experiment events (GoatCounter only; nothing personal) ---------- */
   function getFlag(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-  function setFlag(k) { try { localStorage.setItem(k, '1'); } catch (e) {} }
+  function setFlag(k, v) { try { localStorage.setItem(k, v || '1'); } catch (e) {} }
+
+  /* Referrer tag from ?ref= on the link that brought this browser here, kept from the first visit. */
+  var ref = getFlag('cf_ref');
+  if (!ref) {
+    var m = /[?&]ref=([^&#]*)/.exec(location.search);
+    ref = m ? decodeURIComponent(m[1]).toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40) : '';
+    ref = ref || 'direct';
+    if (!testMode) setFlag('cf_ref', ref);
+  }
 
   /* Events wait in a queue until GoatCounter's script has loaded. */
   var queue = [];
@@ -346,9 +461,9 @@
       window.goatcounter.count({ path: name, title: name, event: true });
     }
   }
-  function send(name) { queue.push(name); flush(); }
+  function send(name) { if (testMode) return; queue.push(name); flush(); }
   function sendOnce(flag, name) {
-    if (getFlag(flag)) return;
+    if (testMode || getFlag(flag)) return;
     setFlag(flag);
     send(name);
   }
@@ -359,10 +474,13 @@
     if (ready() || tries > 150) clearInterval(timer);
   }, 100);
 
-  /* view-A or view-B: once per browser, first visit */
-  sendOnce('cf_viewed', 'view-' + version);
+  /* Event paths: exp/<version>/<kind>/<ref>. Each kind fires at most once per browser. */
+  function ev(kind) { return 'exp/' + version + '/' + kind + '/' + ref; }
 
-  /* Awareness question: once per browser */
+  /* view: once per browser, on the first visit (the denominator) */
+  sendOnce('cfx_view', ev('view'));
+
+  /* Awareness question: once per browser, same in both versions */
   var heard = document.getElementById('heard');
   function thank() { heard.innerHTML = '<p class="heard-thanks">Thanks for answering.</p>'; }
   if (getFlag('cf_heard')) {
@@ -377,17 +495,16 @@
     }
   }
 
-  /* Actions: act-A/act-B once per browser (the test outcome); apply-/help- on every click */
+  /* Outcomes: "any" = first click on Apply or any help link (primary outcome);
+     "apply" and "help" = first click of each type. Repeat clicks are never counted. */
   var actions = document.querySelectorAll('[data-action]');
   for (var j = 0; j < actions.length; j++) {
     actions[j].addEventListener('click', function () {
-      sendOnce('cf_acted', 'act-' + version);
-      send(this.getAttribute('data-action') + '-' + version);
+      var kind = this.getAttribute('data-action');
+      sendOnce('cfx_any', ev('any'));
+      sendOnce('cfx_' + kind, ev(kind));
     });
   }
-
-  /* Check-in link: every click */
-  document.getElementById('checkin').addEventListener('click', function () { send('checkin'); });
 })();
 </script>
 </body>
