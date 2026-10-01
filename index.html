@@ -243,6 +243,12 @@
     padding:16px 18px; max-width:76ch; background:var(--receipt);
   }
 
+  .method-faq{margin-top:40px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 36px; max-width:1000px;}
+  .method-faq h3{font-size:16px; font-weight:800; margin-bottom:6px;}
+  .method-faq p, .method-faq li{font-size:14px; color:#33312c;}
+  .method-faq ul{padding-left:18px;}
+  .method-faq li{margin-top:4px;}
+  @media (max-width:900px){ .method-faq{grid-template-columns:minmax(0,1fr);} }
   .chart-note{margin-top:14px; font-family:var(--font-mono); font-size:12px; color:var(--gray); max-width:76ch; line-height:1.7;}
   .chart-note a{color:inherit;}
   .revision-log{margin-top:22px; border-style:solid;}
@@ -406,8 +412,37 @@
       <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index rather than a raw price average. The weights sit in the site's configuration block, so anyone can inspect them or change them in a fork.</p></div>
       <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>. From Sept 28, 2026, a dated screen capture of each listing is published the same day in <a data-link="listings" href="#"><code>archive/listings/</code></a>, so any price can be checked against the page it came from. Anyone can audit the math or rebuild the index.</p></div>
     </div>
+    <div class="method-faq" id="method-questions">
+      <div>
+        <h3>Why these 14 items?</h3>
+        <p>They cover all five food-at-home categories the index is weighted by (dairy and eggs, meat and poultry, produce, pantry, beverages) with everyday staples a typical household buys. Every item is stocked in a comparable form at all three stores and is listed online for the Folsom store, so it can be priced the same way every week. National brands are used where the exact product matters (Cheerios, Jif, Barilla, Tillamook, Coca-Cola, Starbucks); store brands where the commodity is the standard (milk, eggs, bread, carrots).</p>
+      </div>
+      <div>
+        <h3>How are the data collected?</h3>
+        <p>By hand, every Monday morning. On each retailer's own website, with the named Folsom store selected, I record the 42 prices (14 items × 3 stores) in the same fixed order every week, following the written item specifications in the <a data-link="readme" href="#">README</a>, and publish them the same day. No scraping and no estimates.</p>
+      </div>
+      <div>
+        <h3>Limitations</h3>
+        <ul>
+          <li><strong>Families switch stores.</strong> The index follows the same products at the same stores. When prices rise, real shoppers switch stores, brands, or items, so a fixed basket can overstate how much a household's grocery bill actually rises.</li>
+          <li><strong>Package sizes change.</strong> Sizes are held fixed by rule. Safeway's store-brand loaf is 22 oz while the others are 20 oz, so its price is normalized to 20 oz (price ÷ 22 × 20). If a package shrinks, the new size is recorded and disclosed.</li>
+          <li><strong>Online vs. shelf prices.</strong> Online prices can differ from shelf prices in the store and can change within a day, so each reading is a Monday-morning snapshot. That affects cart levels more than week-to-week change.</li>
+          <li><strong>Member pricing.</strong> Retailers show different prices to loyalty members, and some offers are personalized. Which price is recorded is fixed by the price-type rule in the <a data-link="readme" href="#">README</a> and applied the same way every week.</li>
+          <li><strong>Three stores.</strong> WinCo (no online prices) and the regional chains are not covered. See the README.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Archives</h3>
+        <p>Since Monday, Sept 28, 2026, I save a dated screenshot of every listing, all 42 each week, in <a data-link="listings" href="#"><code>archive/listings/YYYY-MM-DD/</code></a>, committed the same day as the prices. Any published price can be checked against the page it came from. The five official weeks before that (Aug 24 through Sept 21) have no captures.</p>
+        <h3 style="margin-top:22px">How does this compare?</h3>
+        <p>NPR has priced a shopping cart at one Walmart in Georgia every year since 2018. Its January 14, 2026 update checked 114 items once a year (<a href="https://www.npr.org/2026/01/14/nx-s1-5638908/walmart-prices-inflation-affordability-shrinkflation" target="_blank" rel="noopener noreferrer">NPR: "NPR shopped for 114 items at Walmart"</a>). The Cart Index makes the opposite trade: fewer items (14), but three stores, priced every week, with every observation published.</p>
+      </div>
+    </div>
     <details class="method-note revision-log" id="revisions">
-      <summary><strong>REVISION LOG</strong> · 3 entries</summary>
+      <summary><strong>REVISION LOG</strong> · 4 entries</summary>
+      <p><span class="rev-date">2026-10-01</span> · <strong>Method questions answered on this page; no data or method change.</strong>
+      Added short notes on why these 14 items, how prices are collected, limitations, the listing archive, and a comparison with
+      NPR&rsquo;s annual Walmart price check. No published price or index value changed.</p>
       <p><span class="rev-date">2026-09-23</span> · <strong>Archival capture of source listings adopted, effective Mon, Sept 28, 2026; <code>item_id</code> added to the schema.</strong>
       Adopted today and taking effect with the collection of Monday, Sept 28, 2026: a dated screen capture of every price listing
       is published in <a data-link="listings" href="#"><code>archive/listings/</code></a>, all 42
