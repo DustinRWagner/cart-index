@@ -26,7 +26,7 @@ The page links to official rules instead of paraphrasing them in detail.
 3. Full carts = floor($306 ÷ average cart). Left over = $306 − full carts × average cart, rounded to the dollar.
 4. **Which week:** during the experiment (through November 8, 2026) the page uses the week of September 28, 2026, so every reader sees the same message. After that it uses the latest official week, so it updates on its own each Monday when new prices are committed. Nothing in the Monday workflow changes.
 
-Week of September 28, 2026: Walmart $49.57, Target $52.76, Safeway $65.49; average **$55.94**. $306 ÷ $55.94 = 5.47 → **5 full carts**, $279.70, with **$26.30** left over (shown as $26).
+Week of September 28, 2026: Walmart $49.57, Target $52.76, Safeway $66.29; average **$56.21**. $306 ÷ $56.21 = 5.44 → **5 full carts**, $281.03, with **$24.97** left over (shown as $25).
 
 Only whole carts are counted, so the figure never overstates what the aid buys. The prices are each retailer's online prices for its Folsom store, under the Cart Index price-type rule (see the main README).
 
@@ -64,5 +64,6 @@ Each visitor is randomly shown one of two versions of the same information: vers
 
 The detailed log is in [CHANGELOG.md](CHANGELOG.md).
 
+- **2026-10-01:** Corrected the Sept 28 Safeway cheddar price in the index data ($4.19 → $4.99); the grocery translation is now 5 carts with $25 to spare (was $26).
 - **2026-10-01:** Experiment rebuilt and preregistered before launch: grocery version computed from the index, `?arm=` and `?ref=` added, Google Forms check-in removed, CDSS and statewide help links added, analysis script and launch kit added. Replaces the September 21 plan, which was never launched.
 - **2026-09-21:** Guide published (unlisted, `noindex`).
