@@ -444,12 +444,13 @@
   function getFlag(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function setFlag(k, v) { try { localStorage.setItem(k, v || '1'); } catch (e) {} }
 
-  /* Referrer tag from ?ref= on the link that brought this browser here, kept from the first visit. */
+  /* Referrer tag from ?ref= on the link that brought this browser here, kept from the first visit.
+     Valid tags: a-z, 0-9, and hyphens, 1 to 30 characters (lowercased first). Anything else is "direct". */
   var ref = getFlag('cf_ref');
   if (!ref) {
     var m = /[?&]ref=([^&#]*)/.exec(location.search);
-    ref = m ? decodeURIComponent(m[1]).toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40) : '';
-    ref = ref || 'direct';
+    try { ref = m ? decodeURIComponent(m[1]).toLowerCase() : ''; } catch (e) { ref = ''; }
+    if (!/^[a-z0-9-]{1,30}$/.test(ref)) ref = 'direct';
     if (!testMode) setFlag('cf_ref', ref);
   }
 
