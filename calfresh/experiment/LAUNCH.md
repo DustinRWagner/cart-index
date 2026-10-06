@@ -6,65 +6,86 @@ You post everything yourself. Nothing here is automated. Post no earlier than **
 
 - [ ] On every browser and phone you use, open `https://folsomcartindex.com/calfresh/#toggle-goatcounter` once. GoatCounter's script then asks whether to stop counting this browser; confirm it. Then open the page normally and check that no new `exp/...` event appears in the dashboard.
 - [ ] Check both versions with `?arm=A` and `?arm=B` (they send nothing; a red "Test mode" bar confirms it).
-- [ ] Confirm that GitHub Pages shows the committed preregistration at `calfresh/experiment/PREREGISTRATION.md`.
+- [ ] Confirm that GitHub Pages shows the committed preregistration at `calfresh/experiment/PREREGISTRATION.md`, including the Oct 6 deviation entry.
+- [ ] Paste one link into a private chat or Reddit's post preview and check the preview text: it should say "CalFresh for college students" and "Free guide for California college students…", with no dollar amount or carts.
 
-## Candidate subreddits to evaluate
+## Where to post, in order
 
-Membership sizes and rules change. Check each one yourself before posting. Fit is about the readers, not the size.
+Fit is about the readers, not the size. Membership sizes and rules change, so check each one yourself before posting. Every tag below is already in [`refs.csv`](refs.csv), which assigns its audience tier for the analysis.
 
-| Subreddit | Why it might fit | Check |
-|---|---|---|
-| r/Folsom | Local to the Cart Index and FLC | Self-promotion rules; whether local resources posts are welcome |
-| r/Sacramento | Largest regional audience; CalFresh is administered by Sacramento County | Strict rules on links and self-promotion are common; message mods first |
-| r/FolsomLakeCollege (if it exists and is active) | Exactly the students the guide is for | Is it active? Who moderates it? |
-| r/RanchoCordova, r/ElDoradoHills, r/Roseville | Nearby towns where FLC students live | Activity level; local-resource rules |
-| r/CommunityCollege | Students in California community colleges, though nationwide | The guide is California-only; say so in the title |
-| r/CalFresh (if it exists and is active) | People already looking into CalFresh | Whether outside links are allowed |
-| r/UCDavis, r/SacState | Nearby students. The June 2026 rule also covers CSU and UC, but the page is written for FLC | Only post if moderators agree it is useful despite the FLC framing |
-
-## Checklist for each subreddit
-
-- [ ] Read the sidebar rules and any pinned "self-promotion" or "resources" policy.
-- [ ] Check whether the subreddit requires a minimum account age or karma.
-- [ ] **Message the moderators first** (use "Message the mods"), with the draft below and the link. Wait for a reply before posting. If there is no reply in 3 days, do not post there.
-- [ ] Use only that subreddit's `?ref=` link from the table below.
-- [ ] Post once. Do not repost or cross-post the same link to the same subreddit.
-- [ ] Reply to comments honestly. If someone asks about eligibility for their situation, point them to GetCalFresh or the county; don't make the call yourself.
-- [ ] Record the outcome in the log below the same day.
-
-## Message to moderators (draft)
-
-> Hi, I'm Dustin, an economics student at Folsom Lake College. I run the Cart Index (folsomcartindex.com), a free weekly grocery price index for Folsom. I made a free, non-commercial guide for students on the June 2026 CalFresh rule change, which now lets many community college students qualify. Would it be OK to share it here? It has no ads and collects no personal information. To learn which presentation is clearer, the page randomly shows one of two versions of the same information. Thanks for considering it.
-
-## Post draft
-
-**Title:** Free guide: since June 2026, many FLC / community college students now qualify for CalFresh (grocery aid)
-
-> I'm a student at Folsom Lake College and I run the Cart Index, a free weekly grocery price index for Folsom. I made a short, free guide to the CalFresh student rule change. Since June 1, 2026, students enrolled at least half-time in an associate's or bachelor's degree program at a California community college, CSU, or UC meet CalFresh's student rule. Income and other rules still apply, and the county makes the decision.
->
-> The guide links straight to the official application (BenefitsCal) and to free help (GetCalFresh, Sacramento Food Bank & Family Services).
->
-> [link for this subreddit]
->
-> It's non-commercial: no ads, no sign-up, no personal information collected. One note: to learn which presentation is clearer, the page randomly shows one of two versions of the same information. The plan for that comparison is public on GitHub, and I'll post the result whatever it shows.
-
-## One link per subreddit
-
-Use the exact link for each place. Tags must be lowercase letters, numbers, or hyphens.
+**Tier 1, local. Post these first, one or two per day.**
 
 | Subreddit | Link |
 |---|---|
-| r/Folsom | https://folsomcartindex.com/calfresh/?ref=r-folsom |
+| r/folsom | https://folsomcartindex.com/calfresh/?ref=r-folsom |
 | r/Sacramento | https://folsomcartindex.com/calfresh/?ref=r-sacramento |
-| r/FolsomLakeCollege | https://folsomcartindex.com/calfresh/?ref=r-folsomlakecollege |
-| r/RanchoCordova | https://folsomcartindex.com/calfresh/?ref=r-ranchocordova |
-| r/ElDoradoHills | https://folsomcartindex.com/calfresh/?ref=r-eldoradohills |
-| r/Roseville | https://folsomcartindex.com/calfresh/?ref=r-roseville |
-| r/CommunityCollege | https://folsomcartindex.com/calfresh/?ref=r-communitycollege |
-| r/CalFresh | https://folsomcartindex.com/calfresh/?ref=r-calfresh |
-| r/UCDavis | https://folsomcartindex.com/calfresh/?ref=r-ucdavis |
 | r/SacState | https://folsomcartindex.com/calfresh/?ref=r-sacstate |
-| Any other place | https://folsomcartindex.com/calfresh/?ref=other-NAME |
+| r/UCDavis | https://folsomcartindex.com/calfresh/?ref=r-ucdavis |
+| An FLC or Los Rios subreddit, if one exists and is active (check first) | https://folsomcartindex.com/calfresh/?ref=r-flc |
+
+**Tier 2, statewide. Post after Tier 1 is done.**
+
+| Subreddit | Link |
+|---|---|
+| r/California | https://folsomcartindex.com/calfresh/?ref=r-california |
+| r/CalFresh | https://folsomcartindex.com/calfresh/?ref=r-calfresh |
+| r/berkeley | https://folsomcartindex.com/calfresh/?ref=r-berkeley |
+| r/UCSD | https://folsomcartindex.com/calfresh/?ref=r-ucsd |
+| r/UCI | https://folsomcartindex.com/calfresh/?ref=r-uci |
+| r/ucla | https://folsomcartindex.com/calfresh/?ref=r-ucla |
+
+**Tier 3, national. Only under the Oct 25 rule below.**
+
+| Subreddit | Link |
+|---|---|
+| r/povertyfinance | https://folsomcartindex.com/calfresh/?ref=r-povertyfinance |
+
+**The Oct 25 rule (preregistered as a deviation on Oct 6, 2026):** on October 25, 2026, run `python3 analysis.py` after importing the GoatCounter export. Post to Tier 3 only if **fewer than 300 visitors per version** have been recorded. Look only at the visitor counts, not the click rates. If both versions already have 300 or more, do not post to Tier 3.
+
+**Other channels** (tier "other"): https://folsomcartindex.com/calfresh/?ref=discord · ?ref=facebook · ?ref=linkedin · ?ref=flyer.
+
+**Don't make up a new tag on the spot.** A tag missing from `refs.csv` is counted as tier "other". To post somewhere new, first add its tag and tier to `refs.csv`, commit it, and log it in PREREGISTRATION.md's Deviations section, all before posting. Tags must be lowercase letters, numbers, or hyphens, 30 characters at most. Anything else is recorded as `direct`.
+
+## Posting notes
+
+- **Use text posts, not link posts.** Put the link inside the body.
+- **Message the moderators first** wherever the rules mention self-promotion, using the draft below. Wait for a reply. If there is no reply in 3 days, do not post there.
+- **One or two subreddits per day.** Post once per subreddit. Do not repost or cross-post the same link to the same subreddit.
+- **Use only that subreddit's own `?ref=` link** from the tables above.
+- **Answer comments in the first hour.** If someone asks about their own eligibility, point them to GetCalFresh or the county; don't make the call yourself.
+- **Never use alternate accounts or ask for upvotes.**
+- If anyone asks why the page differs from what a friend saw: **"It randomly shows one of two layouts to learn which is clearer."**
+- The post copy below deliberately never mentions $306 or carts. Keep it that way in comments too, so readers see their own version first.
+- Record each post in the log below the same day.
+
+## Message to moderators (draft)
+
+> Hi, I'm Dustin, an economics student at Folsom Lake College. I made a free, non-commercial one-page guide for California college students on CalFresh eligibility, with the official student rules and a direct link to apply. Would it be OK to share it here as a text post? It has no ads and collects no personal information. To learn which layout is clearer, the page randomly shows one of two versions of the same information. Thanks for considering it.
+
+## Post copy
+
+**Local title (Tier 1), pick one:**
+
+1. Most college students who qualify for CalFresh never apply. I made a free guide to check if you do.
+2. Sacramento-area students: you might qualify for monthly grocery money and not know it
+
+**Statewide title (Tier 2):**
+
+California college students: most who qualify for CalFresh never apply. Free guide to check if you do.
+
+**National title (Tier 3 only):**
+
+California college students only: most who qualify for CalFresh never apply. Free guide to check if you do.
+
+**Body (all tiers):**
+
+> I'm a Folsom Lake College student. CalFresh (California's version of food stamps) gives eligible college students money for groceries every month, but most students who qualify never apply, often because they assume it isn't for them.
+>
+> I put together a free one-page guide with the official student eligibility info and a direct link to apply:
+>
+> [link with this subreddit's ref tag]
+>
+> No sign-up, no ads, no personal info collected. If it helps one person eat better this semester, that's the whole point.
 
 ## Log
 
