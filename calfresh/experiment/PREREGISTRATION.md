@@ -115,4 +115,6 @@ The result will be published by November 16, 2026, whatever it shows: positive, 
 
 ## Deviations
 
-None so far. Any change after launch is added here with its date, what changed, why, and what data it affects.
+Any change after launch is added here with its date, what changed, why, and what data it affects.
+
+- **Oct 6, 2026, before any public posts:** (1) Broadened audience wording from FLC students to California college students, labeled the Sacramento County food bank contact, and added neutral link-preview metadata; changes are identical in both versions and do not alter the framing being tested. (2) Because version B's grocery framing uses Folsom prices while version A's dollar figure is universal, traffic is grouped into audience tiers (local, statewide, national, other) defined in refs.csv. The primary analysis is unchanged. Added: per-tier descriptive results, and a sensitivity analysis restricted to local and statewide traffic. (3) National subreddits will be used only if, by Oct 25, 2026, there are fewer than 300 visitors per version; any such posts use their own ref tag. (4) Known limitation: version B places more text above the Apply button, which may affect clicks on mobile independent of framing.
