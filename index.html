@@ -360,8 +360,8 @@
     </div>
 
     <div class="chart-controls" role="group" aria-label="Chart view">
-      <button class="tag-btn" id="btn-composite" aria-pressed="true">Composite index</button>
-      <button class="tag-btn" id="btn-stores" aria-pressed="false">By store</button>
+      <button class="tag-btn" id="btn-stores" aria-pressed="true">By store</button>
+      <button class="tag-btn" id="btn-composite" aria-pressed="false">Composite index</button>
     </div>
     <div class="chart-box"><canvas id="chart" height="380" aria-label="Line chart of the Cart Index over time" role="img"></canvas></div>
     <p class="chart-note">The official series begins <strong>Aug 24, 2026</strong> (= 100). The seven weeks of Jul 6 – Aug 17 were a pilot used to finalize the collection protocol; pilot observations are published in the raw CSV, flagged <code>pilot</code>, and excluded from the index. Details are in the <a href="#revisions">revision log</a>.</p>
@@ -693,9 +693,9 @@ function render(D){
     </div>`;
   }).join("");
 
-  drawChart(D, "composite");
-  $("btn-composite").onclick = ()=>{ setPressed("btn-composite"); drawChart(D,"composite"); };
+  drawChart(D, "stores");
   $("btn-stores").onclick = ()=>{ setPressed("btn-stores"); drawChart(D,"stores"); };
+  $("btn-composite").onclick = ()=>{ setPressed("btn-composite"); drawChart(D,"composite"); };
 }
 
 function setPressed(id){
