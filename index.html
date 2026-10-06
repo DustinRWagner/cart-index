@@ -233,22 +233,33 @@
   .delta.flat{background:#eee;}
 
   /* methodology */
-  .method{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
+  .method{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px 48px; max-width:1000px;}
   .m-step{border-top:6px solid var(--ink); padding-top:14px;}
   .m-step .num{font-family:var(--font-display); font-size:34px; line-height:1;}
-  .m-step h3{font-size:16px; font-weight:800; margin:8px 0 6px;}
-  .m-step p{font-size:14px; color:#33312c;}
+  .m-step h3{font-size:18px; font-weight:800; margin:8px 0 8px;}
+  .m-step .lead{font-size:16px; font-weight:600; line-height:1.5; color:var(--ink); max-width:60ch;}
+  .m-step ul{margin-top:10px; padding-left:18px; max-width:60ch;}
+  .m-step li{font-size:15px; line-height:1.65; color:#2a2823; margin-top:6px;}
+  .m-step li::marker{color:var(--yellow-deep);}
   .method-note{
     margin-top:34px; font-family:var(--font-mono); font-size:13px; border:2px dashed var(--ink);
     padding:16px 18px; max-width:76ch; background:var(--receipt);
   }
 
-  .method-faq{margin-top:40px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px 36px; max-width:1000px;}
-  .method-faq h3{font-size:16px; font-weight:800; margin-bottom:6px;}
-  .method-faq p, .method-faq li{font-size:14px; color:#33312c;}
+  .method-faq{margin-top:56px; padding-top:32px; border-top:var(--rule); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:36px 48px; max-width:1000px;}
+  .method-faq h3{font-size:18px; font-weight:800; margin-bottom:8px;}
+  .method-faq p, .method-faq li{font-size:15px; line-height:1.65; color:#2a2823; max-width:65ch;}
+  .method-faq p + p{margin-top:10px;}
+  .method-faq a{text-decoration-thickness:1px; text-underline-offset:3px;}
   .method-faq ul{padding-left:18px;}
-  .method-faq li{margin-top:4px;}
-  @media (max-width:900px){ .method-faq{grid-template-columns:minmax(0,1fr);} }
+  .method-faq li{margin-top:10px;}
+  .method-faq li::marker{color:var(--yellow-deep);}
+  .method-faq .faq-wide{grid-column:1 / -1;}
+  .method-faq .faq-wide ul{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:48px;}
+  @media (max-width:900px){
+    .method-faq{grid-template-columns:minmax(0,1fr);}
+    .method-faq .faq-wide ul{grid-template-columns:minmax(0,1fr);}
+  }
   .chart-note{margin-top:14px; font-family:var(--font-mono); font-size:12px; color:var(--gray); max-width:76ch; line-height:1.7;}
   .chart-note a{color:inherit;}
   .revision-log{margin-top:22px; border-style:solid;}
@@ -256,7 +267,9 @@
   .revision-log summary::-webkit-details-marker{display:none;}
   .revision-log summary::before{content:"\25B8 "; display:inline-block; transition:transform .15s;}
   .revision-log[open] summary::before{content:"\25BE ";}
-  .revision-log p{margin:12px 0 0;}
+  .revision-log{line-height:1.7;}
+  .revision-log p{margin:16px 0 0; padding-top:16px; border-top:1px dashed var(--gray);}
+  .revision-log .rev-head{display:block; margin-bottom:6px;}
   .revision-log .rev-date{background:var(--yellow); padding:0 4px; font-weight:600;}
   .revision-log strong{letter-spacing:.08em;}
 
@@ -272,11 +285,10 @@
     .stat:nth-child(1),.stat:nth-child(2){border-bottom:var(--rule);}
     .cart-row{grid-template-columns:1fr; gap:8px;}
     .cart-row .total{text-align:left;}
-    .method{grid-template-columns:1fr 1fr;}
     footer .wrap{grid-template-columns:1fr;}
     .calc-row{grid-template-columns:1fr;}
   }
-  @media (max-width:560px){ .method{grid-template-columns:1fr;} }
+  @media (max-width:700px){ .method{grid-template-columns:minmax(0,1fr); gap:32px;} }
   @media (prefers-reduced-motion: reduce){
     .ticker-track{animation:none;}
     html{scroll-behavior:auto;}
@@ -407,21 +419,58 @@
     <p class="kicker">04 · The method</p>
     <h2 class="sec">How it's measured</h2>
     <div class="method">
-      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3><p>The same named products, at the same stores, every week. Each item is defined by a written specification (brand tier, cut, package size, and price type), so every observation is like-for-like. Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted. Full specifications are in the <a data-link="readme" href="#">README</a>.</p></div>
-      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3><p>Prices recorded every Monday morning from each retailer's own website, with the exact Folsom store location selected, exactly as displayed for that store. Free loyalty pricing counts where a retailer shows it by default (Safeway for U); Target displays its base price. Clip-to-activate coupons and paid memberships are never used.</p></div>
-      <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3><p>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index), so the composite behaves like a true price index rather than a raw price average. The weights sit in the site's configuration block, so anyone can inspect them or change them in a fork.</p></div>
-      <div class="m-step"><div class="num">4</div><h3>Published open</h3><p>Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>. From Sept 28, 2026, a dated screen capture of each listing is published the same day in <a data-link="listings" href="#"><code>archive/listings/</code></a>, so any price can be checked against the page it came from. Anyone can audit the math or rebuild the index.</p></div>
+      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3>
+        <p class="lead">The same named products, at the same stores, every week.</p>
+        <ul>
+          <li>Each item is defined by a written specification (brand tier, cut, package size, and price type), so every observation is like-for-like.</li>
+          <li>Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted.</li>
+          <li>Full specifications are in the <a data-link="readme" href="#">README</a>.</li>
+        </ul>
+      </div>
+      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3>
+        <p class="lead">Recorded every Monday morning from each retailer's own website, with the exact Folsom store location selected.</p>
+        <ul>
+          <li>Prices are taken exactly as displayed for that store.</li>
+          <li>Free loyalty pricing counts where a retailer shows it by default (Safeway for U); Target displays its base price.</li>
+          <li>Clip-to-activate coupons and paid memberships are never used.</li>
+        </ul>
+      </div>
+      <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3>
+        <p class="lead">Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index).</p>
+        <ul>
+          <li>The composite behaves like a true price index rather than a raw price average.</li>
+          <li>The weights sit in the site's configuration block, so anyone can inspect them or change them in a fork.</li>
+        </ul>
+      </div>
+      <div class="m-step"><div class="num">4</div><h3>Published open</h3>
+        <p class="lead">Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>.</p>
+        <ul>
+          <li>From Sept 28, 2026, a dated screen capture of each listing is published the same day in <a data-link="listings" href="#"><code>archive/listings/</code></a>.</li>
+          <li>Any price can be checked against the page it came from.</li>
+          <li>Anyone can audit the math or rebuild the index.</li>
+        </ul>
+      </div>
     </div>
     <div class="method-faq" id="method-questions">
       <div>
         <h3>Why these 14 items?</h3>
-        <p>They cover all five food-at-home categories the index is weighted by (dairy and eggs, meat and poultry, produce, pantry, beverages) with everyday staples a typical household buys. Every item is stocked in a comparable form at all three stores and is listed online for the Folsom store, so it can be priced the same way every week. National brands are used where the exact product matters (Cheerios, Jif, Barilla, Tillamook, Coca-Cola, Starbucks); store brands where the commodity is the standard (milk, eggs, bread, carrots).</p>
+        <p>They cover all five food-at-home categories the index is weighted by (dairy and eggs, meat and poultry, produce, pantry, beverages) with everyday staples a typical household buys.</p>
+        <p>Every item is stocked in a comparable form at all three stores and is listed online for the Folsom store, so it can be priced the same way every week.</p>
+        <p>National brands are used where the exact product matters (Cheerios, Jif, Barilla, Tillamook, Coca-Cola, Starbucks); store brands where the commodity is the standard (milk, eggs, bread, carrots).</p>
       </div>
       <div>
         <h3>How are the data collected?</h3>
         <p>By hand, every Monday morning. On each retailer's own website, with the named Folsom store selected, I record the 42 prices (14 items × 3 stores) in the same fixed order every week, following the written item specifications in the <a data-link="readme" href="#">README</a>, and publish them the same day. No scraping and no estimates.</p>
       </div>
       <div>
+        <h3>Archives</h3>
+        <p>Since Monday, Sept 28, 2026, I save a dated screenshot of every listing, all 42 each week, in <a data-link="listings" href="#"><code>archive/listings/YYYY-MM-DD/</code></a>, committed the same day as the prices. Any published price can be checked against the page it came from. The five official weeks before that (Aug 24 through Sept 21) have no captures.</p>
+      </div>
+      <div>
+        <h3>How does this compare?</h3>
+        <p>NPR has priced a shopping cart at one Walmart in Georgia every year since 2018. Its January 14, 2026 update checked 114 items once a year (<a href="https://www.npr.org/2026/01/14/nx-s1-5638908/walmart-prices-inflation-affordability-shrinkflation" target="_blank" rel="noopener noreferrer">NPR: "NPR shopped for 114 items at Walmart"</a>). The Cart Index makes the opposite trade: fewer items (14), but three stores, priced every week, with every observation published.</p>
+      </div>
+      <div class="faq-wide">
         <h3>Limitations</h3>
         <ul>
           <li><strong>Families switch stores.</strong> The index follows the same products at the same stores. When prices rise, real shoppers switch stores, brands, or items, so a fixed basket can overstate how much a household's grocery bill actually rises.</li>
@@ -431,25 +480,19 @@
           <li><strong>Three stores.</strong> WinCo (no online prices) and the regional chains are not covered. See the README.</li>
         </ul>
       </div>
-      <div>
-        <h3>Archives</h3>
-        <p>Since Monday, Sept 28, 2026, I save a dated screenshot of every listing, all 42 each week, in <a data-link="listings" href="#"><code>archive/listings/YYYY-MM-DD/</code></a>, committed the same day as the prices. Any published price can be checked against the page it came from. The five official weeks before that (Aug 24 through Sept 21) have no captures.</p>
-        <h3 style="margin-top:22px">How does this compare?</h3>
-        <p>NPR has priced a shopping cart at one Walmart in Georgia every year since 2018. Its January 14, 2026 update checked 114 items once a year (<a href="https://www.npr.org/2026/01/14/nx-s1-5638908/walmart-prices-inflation-affordability-shrinkflation" target="_blank" rel="noopener noreferrer">NPR: "NPR shopped for 114 items at Walmart"</a>). The Cart Index makes the opposite trade: fewer items (14), but three stores, priced every week, with every observation published.</p>
-      </div>
     </div>
     <details class="method-note revision-log" id="revisions">
       <summary><strong>REVISION LOG</strong> · 5 entries</summary>
-      <p><span class="rev-date">2026-10-01</span> · <strong>Correction: Safeway cheddar, week of Sept 28, 2026, $4.19 &rarr; $4.99.</strong>
+      <p><span class="rev-head"><span class="rev-date">2026-10-01</span> <strong>Correction: Safeway cheddar, week of Sept 28, 2026, $4.19 &rarr; $4.99.</strong></span>
       The Safeway row had been entered with Target&rsquo;s price for the same item ($4.19), and the capture file
       <code>archive/listings/2026-09-28/safeway_cheddar.png</code> held a copy of the Target listing instead of the Safeway one.
       The Safeway capture from Sept 28 had been saved under the wrong file. It replaced the incorrect file on Oct 1 and shows $4.99,
       the same price recorded in the two prior weeks. Effect: Safeway&rsquo;s Sept 28 cart rises from $65.49 to $66.29, and the composite
       index for that week from 102.3 to 102.7. No other price changed.</p>
-      <p><span class="rev-date">2026-10-01</span> · <strong>Method questions answered on this page; no data or method change.</strong>
+      <p><span class="rev-head"><span class="rev-date">2026-10-01</span> <strong>Method questions answered on this page; no data or method change.</strong></span>
       Added short notes on why these 14 items, how prices are collected, limitations, the listing archive, and a comparison with
       NPR&rsquo;s annual Walmart price check. No published price or index value changed.</p>
-      <p><span class="rev-date">2026-09-23</span> · <strong>Archival capture of source listings adopted, effective Mon, Sept 28, 2026; <code>item_id</code> added to the schema.</strong>
+      <p><span class="rev-head"><span class="rev-date">2026-09-23</span> <strong>Archival capture of source listings adopted, effective Mon, Sept 28, 2026; <code>item_id</code> added to the schema.</strong></span>
       Adopted today and taking effect with the collection of Monday, Sept 28, 2026: a dated screen capture of every price listing
       is published in <a data-link="listings" href="#"><code>archive/listings/</code></a>, all 42
       observations, on the same day as the prices they support, so any published figure can be checked against the page it was
@@ -460,7 +503,7 @@
       filenames (<code>safeway_eggs</code>, <code>target_coke</code>), appended last so existing columns are unchanged. Also
       recorded: online prices can change more than once within a day, so each Monday reading is a snapshot of that morning rather
       than the week&rsquo;s price; and Target&rsquo;s displayed price is its base price, with no Circle member offer applied.</p>
-      <p><span class="rev-date">2026-08-22</span> · <strong>Collection protocol adopted; official series defined.</strong>
+      <p><span class="rev-head"><span class="rev-date">2026-08-22</span> <strong>Collection protocol adopted; official series defined.</strong></span>
       A written protocol now fixes every item specification: brand tier, cut, and package size for both meat items;
       per-banana pricing (the only unit all three stores display); normalization of Safeway’s 22 oz loaf to a 20 oz
       equivalent; and the price-type rule under which Safeway prices are its free-membership (for U) prices. Ground beef
@@ -468,7 +511,7 @@
       stocked at all three, so part of any cross-store chicken gap reflects pack size rather than store pricing. This
       affects cart levels, not the index. The official series begins with the first collection under this protocol,
       Monday, Aug 24, 2026 = 100.</p>
-      <p><span class="rev-date">2026-08-21</span> · <strong>Jul 6 – Aug 17 designated the pilot phase; panel set at three stores.</strong>
+      <p><span class="rev-head"><span class="rev-date">2026-08-21</span> <strong>Jul 6 – Aug 17 designated the pilot phase; panel set at three stores.</strong></span>
       During those seven weeks the meat items were not selected under a written specification, so those observations are not
       like-for-like week to week. They remain published in the CSV, flagged <code>pilot</code>, and are excluded from the index;
       the index previously shown here, computed from all pilot data with base week Jul 6, is superseded and not comparable to
