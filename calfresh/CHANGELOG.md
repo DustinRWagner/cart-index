@@ -2,6 +2,17 @@
 
 Every change to the page, the method, or the data after the preregistration commit is recorded here, newest first. Each entry gives the date, what changed, why, and any data affected.
 
+## 2026-10-06
+
+Before any public posts. Logged as a deviation in `experiment/PREREGISTRATION.md`.
+
+- **Audience broadened (both versions identically).** Masthead, eyebrow, heading, and receipt subtitle now address California college students instead of FLC students; the footer credits a Folsom Lake College student. "At FLC" in the student-rule sentence replaced with "at a California community college, CSU, or UC," and the same qualifier added to the "Who may qualify" card, matching CDSS ACL 26-25 (section 1 of the preregistration). The rule itself is unchanged; without the qualifier, students at private or out-of-state colleges could have read it as covering them. The Sacramento Food Bank & Family Services contact is labeled "In Sacramento County"; GetCalFresh and the statewide line (1-877-847-3663) remain the options for everyone. The tested framing (the $306 / 5-carts block and the receipt's monthly-max line) is unchanged.
+- **Neutral link previews.** Title, description, og:title, and og:description no longer mention FLC and contain no dollar amounts or cart counts; added `twitter:card=summary`. No og:image.
+- **`?ref=` validation.** Tags are lowercased and must be 1 to 30 characters of a-z, 0-9, or hyphens; anything else is recorded as `direct` (previously invalid characters were stripped and tags cut at 40). First-visit-only behavior is unchanged.
+- **Audience tiers.** `experiment/refs.csv` maps each ref to a tier (local, statewide, national, other); unlisted refs count as other. Reason: version B's grocery framing uses Folsom prices, while version A's dollar figure is universal.
+- **Analysis.** Primary analysis unchanged (all eligible traffic in the window, pooled). Added a pre-specified sensitivity analysis (same test, local + statewide tiers only), a visitors-per-tier table in `results.md`, and `--by-tier` descriptive results.
+- **Launch plan.** National subreddits only if, by Oct 25, 2026, there are fewer than 300 visitors per version, each with its own ref tag. Known limitation recorded: version B places more text above the Apply button on mobile.
+
 ## 2026-10-01
 
 - **Index data corrected before launch.** The Sept 28 Safeway cheddar price in `data/prices.csv` was $4.19, which was Target's price entered on the Safeway row; the correct Safeway price is $4.99 (see the Cart Index revision log). Version B's fixed translation is now 5 full carts with $25 to spare (average cart $56.21), not $26 (average $55.94). The number of carts is unchanged. This was corrected before the guide was shared and before the data window opens.

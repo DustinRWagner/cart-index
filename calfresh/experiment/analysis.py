@@ -5,8 +5,12 @@ Usage:
   python3 analysis.py                       # analyze results.csv, print numbers + summary
   python3 analysis.py --write-md            # same, and write results.md
   python3 analysis.py --from-export FILE    # rebuild results.csv from a GoatCounter CSV export first
+  python3 analysis.py --by-tier             # also print descriptive results per audience tier
 
 Only the Python standard library is used. The plan this follows is PREREGISTRATION.md.
+The primary analysis pools all eligible traffic in the window, as preregistered. Audience tiers
+(refs.csv) are used only for the descriptive by-tier results and the sensitivity analysis, both
+added as a logged deviation before any public posts (see PREREGISTRATION.md, Deviations).
 """
 import argparse
 import csv
@@ -21,6 +25,7 @@ from zoneinfo import ZoneInfo
 HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results.csv")
 RESULTS_MD = os.path.join(HERE, "results.md")
+REFS = os.path.join(HERE, "refs.csv")
 FIELDS = ["date", "version", "visitors", "apply_clicks", "help_clicks", "any_click", "ref"]
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
@@ -29,6 +34,8 @@ WINDOW_END = date(2026, 11, 8)
 ALPHA = 0.05
 Z975 = NormalDist().inv_cdf(0.975)
 KIND_TO_FIELD = {"view": "visitors", "apply": "apply_clicks", "help": "help_clicks", "any": "any_click"}
+TIERS = ("local", "statewide", "national", "other")
+SENSITIVITY_TIERS = ("local", "statewide")   # California-relevant traffic
 
 
 # ---------------------------------------------------------------- GoatCounter export -> results.csv
@@ -87,6 +94,32 @@ def load():
                 tot[r["version"]][k] += n
                 by_ref[r["ref"] or "direct"][r["version"]][k] += n
     return tot, by_ref
+
+
+def load_tiers():
+    """ref -> tier from refs.csv. A ref that is not listed counts as "other"."""
+    tiers = {}
+    if not os.path.exists(REFS):
+        print(f"Warning: {REFS} not found; every ref counts as tier 'other'.\n", file=sys.stderr)
+        return tiers
+    with open(REFS, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            ref, tier = (r.get("ref") or "").strip(), (r.get("tier") or "").strip()
+            if tier not in TIERS:
+                sys.exit(f"refs.csv: ref '{ref}' has unknown tier '{tier}' (allowed: {', '.join(TIERS)})")
+            tiers[ref] = tier
+    return tiers
+
+
+def by_tier(by_ref, tiers):
+    """Sum the per-ref counts into audience tiers."""
+    out = {t: {v: defaultdict(int) for v in "AB"} for t in TIERS}
+    for ref, v in by_ref.items():
+        t = tiers.get(ref, "other")
+        for k in "AB":
+            for field, n in v[k].items():
+                out[t][k][field] += n
+    return out
 
 
 def fisher_two_sided(a, b, c, d):
@@ -178,6 +211,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--from-export", metavar="FILE", help="GoatCounter CSV export to rebuild results.csv from")
     ap.add_argument("--write-md", action="store_true", help="also write results.md")
+    ap.add_argument("--by-tier", action="store_true",
+                    help="also print descriptive (secondary) results per audience tier from refs.csv")
     args = ap.parse_args()
     if args.from_export:
         from_export(args.from_export)
@@ -202,6 +237,36 @@ def main():
         out.append(row)
     if not by_ref:
         out.append("  No data yet.")
+
+    # Audience tiers (refs.csv). The primary result above is unchanged by anything below.
+    tiers = load_tiers()
+    tt = by_tier(by_ref, tiers)
+    sens = {v: defaultdict(int) for v in "AB"}
+    for t in SENSITIVITY_TIERS:
+        for k in "AB":
+            for field, n in tt[t][k].items():
+                sens[k][field] += n
+    sensitivity = compare(sens["A"]["any_click"], sens["A"]["visitors"], sens["B"]["any_click"], sens["B"]["visitors"])
+    out += [""] + report("SENSITIVITY (pre-specified; not the primary result): clicked apply or help at least once,\n"
+                         "  local + statewide tiers only (California-relevant traffic)", sensitivity)
+
+    out += ["", "Visitors by audience tier (tiers from refs.csv; unlisted refs count as 'other')",
+            f"  {'tier':<12}{'A visitors':>11}{'B visitors':>12}{'total':>8}"]
+    for t in TIERS:
+        na, nb = tt[t]["A"]["visitors"], tt[t]["B"]["visitors"]
+        out.append(f"  {t:<12}{na:>11}{nb:>12}{na + nb:>8}")
+    unlisted = sorted(r for r in by_ref if r not in tiers)
+    if unlisted:
+        out.append(f"  Unlisted refs counted as 'other': {', '.join(unlisted)}")
+
+    if args.by_tier:
+        out += ["", "SECONDARY, DESCRIPTIVE ONLY: by audience tier (no tests; not the primary result)",
+                f"  {'tier':<12}{'ver':<5}{'visitors':>9}{'any':>6}{'any rate':>10}{'apply':>7}{'apply rate':>12}"]
+        for t in TIERS:
+            for k in "AB":
+                n, x, a = tt[t][k]["visitors"], tt[t][k]["any_click"], tt[t][k]["apply_clicks"]
+                out.append(f"  {t:<12}{k:<5}{n:>9}{x:>6}{(pct(x / n) if n else '-'):>10}"
+                           f"{a:>7}{(pct(a / n) if n else '-'):>12}")
     para = summary(primary, final)
     out += ["", "Plain-English summary", para]
     print("\n".join(out))
@@ -212,7 +277,13 @@ def main():
             f.write(f"Preregistration: [PREREGISTRATION.md](PREREGISTRATION.md). "
                     f"Status: **{'final' if final else f'collecting data until {WINDOW_END:%B} {WINDOW_END.day}, {WINDOW_END.year}'}**. "
                     f"Generated by `analysis.py` from `results.csv` on {datetime.now(PACIFIC):%Y-%m-%d}.\n\n")
-            f.write(para + "\n\n```\n" + "\n".join(out[:-3]) + "\n```\n")
+            f.write(para + "\n\n")
+            f.write("Visitors by audience tier (descriptive; tiers defined in [refs.csv](refs.csv) before any posts; "
+                    "unlisted refs count as \"other\"):\n\n| Tier | Version A | Version B | Total |\n|---|---:|---:|---:|\n")
+            for t in TIERS:
+                na, nb = tt[t]["A"]["visitors"], tt[t]["B"]["visitors"]
+                f.write(f"| {t} | {na} | {nb} | {na + nb} |\n")
+            f.write("\n```\n" + "\n".join(out[:-3]) + "\n```\n")
         print(f"\nWrote {RESULTS_MD}")
 
 
