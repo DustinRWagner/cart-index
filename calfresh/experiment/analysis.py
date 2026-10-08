@@ -7,6 +7,9 @@ Usage:
   python3 analysis.py --from-export FILE    # rebuild results.csv from a GoatCounter CSV export first
   python3 analysis.py --by-tier             # also print descriptive results per audience tier
 
+Every run also prints descriptive (untested) extras: visitors per ref with each post's status from
+posts.csv, total visitors from live posts, and the awareness-question answers from heard.csv.
+
 Only the Python standard library is used. The plan this follows is PREREGISTRATION.md.
 The primary analysis pools all eligible traffic in the window, as preregistered. Audience tiers
 (refs.csv) are used only for the descriptive by-tier results and the sensitivity analysis, both
@@ -26,6 +29,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results.csv")
 RESULTS_MD = os.path.join(HERE, "results.md")
 REFS = os.path.join(HERE, "refs.csv")
+POSTS = os.path.join(HERE, "posts.csv")
+HEARD = os.path.join(HERE, "heard.csv")
+HEARD_FIELDS = ["date", "answer", "count"]
+POST_STATUSES = ("live", "removed", "planned")
 FIELDS = ["date", "version", "visitors", "apply_clicks", "help_clicks", "any_click", "ref"]
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
@@ -54,11 +61,14 @@ def from_export(path):
             if need not in cols:
                 sys.exit(f"Export is missing a '{need}' column; header was: {header}")
         counts = defaultdict(lambda: {k: 0 for k in KIND_TO_FIELD.values()})
+        heard = defaultdict(int)
         dropped_bots = dropped_window = 0
         for row in reader:
             p = row[cols["path"]].strip().lstrip("/")
             parts = p.split("/")
-            if len(parts) != 4 or parts[0] != "exp" or parts[1] not in ("A", "B") or parts[2] not in KIND_TO_FIELD:
+            is_heard = p in ("heard-yes", "heard-no")
+            if not is_heard and (len(parts) != 4 or parts[0] != "exp" or parts[1] not in ("A", "B")
+                                 or parts[2] not in KIND_TO_FIELD):
                 continue
             if "bot" in cols and row[cols["bot"]].strip() not in ("", "0", "false", "False"):
                 dropped_bots += 1
@@ -70,14 +80,23 @@ def from_export(path):
             if not (WINDOW_START <= d <= WINDOW_END):
                 dropped_window += 1
                 continue
+            if is_heard:
+                heard[(d.isoformat(), p[len("heard-"):])] += 1
+                continue
             counts[(d.isoformat(), parts[1], parts[3])][KIND_TO_FIELD[parts[2]]] += 1
     with open(RESULTS, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
         w.writeheader()
         for (d, v, ref), c in sorted(counts.items()):
             w.writerow({"date": d, "version": v, "ref": ref, **c})
-    print(f"Wrote {RESULTS}: {len(counts)} rows ({dropped_bots} bot events and "
-          f"{dropped_window} out-of-window events dropped).\n")
+    # The awareness answer is sent as heard-yes / heard-no, with no version or ref attached.
+    with open(HEARD, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=HEARD_FIELDS)
+        w.writeheader()
+        for (d, answer), n in sorted(heard.items()):
+            w.writerow({"date": d, "answer": answer, "count": n})
+    print(f"Wrote {RESULTS}: {len(counts)} rows, and {HEARD}: {len(heard)} rows "
+          f"({dropped_bots} bot events and {dropped_window} out-of-window events dropped).\n")
 
 
 # ---------------------------------------------------------------- statistics
@@ -109,6 +128,34 @@ def load_tiers():
                 sys.exit(f"refs.csv: ref '{ref}' has unknown tier '{tier}' (allowed: {', '.join(TIERS)})")
             tiers[ref] = tier
     return tiers
+
+
+def load_posts():
+    """ref -> list of post statuses from posts.csv (a ref can have more than one post)."""
+    posts = defaultdict(list)
+    if not os.path.exists(POSTS):
+        print(f"Warning: {POSTS} not found; no post statuses.\n", file=sys.stderr)
+        return posts
+    with open(POSTS, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            ref, status = (r.get("ref") or "").strip(), (r.get("status") or "").strip()
+            if status not in POST_STATUSES:
+                sys.exit(f"posts.csv: ref '{ref}' has unknown status '{status}' (allowed: {', '.join(POST_STATUSES)})")
+            if status not in posts[ref]:
+                posts[ref].append(status)
+    return posts
+
+
+def load_heard():
+    """Awareness-question answers in the window: {"yes": n, "no": n}, or None if heard.csv is missing."""
+    if not os.path.exists(HEARD):
+        return None
+    out = {"yes": 0, "no": 0}
+    with open(HEARD, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if WINDOW_START <= date.fromisoformat(r["date"]) <= WINDOW_END and r["answer"] in out:
+                out[r["answer"]] += int(r["count"] or 0)
+    return out
 
 
 def by_tier(by_ref, tiers):
@@ -267,6 +314,32 @@ def main():
                 n, x, a = tt[t][k]["visitors"], tt[t][k]["any_click"], tt[t][k]["apply_clicks"]
                 out.append(f"  {t:<12}{k:<5}{n:>9}{x:>6}{(pct(x / n) if n else '-'):>10}"
                            f"{a:>7}{(pct(a / n) if n else '-'):>12}")
+    # Descriptive additions (Oct 7, 2026): post status per ref, live-post reach, awareness answers.
+    # None of this is tested or feeds the primary result.
+    posts = load_posts()
+    status_rows = []
+    for ref in sorted(set(posts) | set(by_ref)):
+        v = by_ref.get(ref)
+        na, nb = (v["A"]["visitors"], v["B"]["visitors"]) if v else (0, 0)
+        status_rows.append((ref, tiers.get(ref, "other"), ", ".join(posts.get(ref, [])) or "no post logged", na, nb))
+    status_rows.sort(key=lambda r: (-(r[3] + r[4]), r[0]))
+    out += ["", "DESCRIPTIVE ONLY: visitors by ref with post status (statuses from posts.csv; no tests)",
+            f"  {'ref':<22}{'tier':<11}{'post status':<17}{'A visitors':>11}{'B visitors':>12}{'total':>8}"]
+    for ref, t, st, na, nb in status_rows:
+        out.append(f"  {ref:<22}{t:<11}{st:<17}{na:>11}{nb:>12}{na + nb:>8}")
+    live_refs = sorted(r for r, st in posts.items() if "live" in st)
+    live_total = sum(by_ref[r][k]["visitors"] for r in live_refs if r in by_ref for k in "AB")
+    live_line = (f"DESCRIPTIVE ONLY: total visitors from live posts: {live_total} "
+                 f"(refs marked live in posts.csv: {', '.join(live_refs) or 'none'})")
+    out += ["", live_line]
+    heard = load_heard()
+    heard_line = ("DESCRIPTIVE ONLY: awareness question (\"Before today, had you heard about this change?\"): "
+                  + ("no data yet (heard.csv is written by --from-export)" if heard is None else
+                     f"heard-no {heard['no']}, heard-yes {heard['yes']}")
+                  + ".\n  All traffic, both versions. These events carry no ref tag, so they cannot be limited to\n"
+                    "  the local and statewide tiers.")
+    out += ["", heard_line]
+
     para = summary(primary, final)
     out += ["", "Plain-English summary", para]
     print("\n".join(out))
@@ -283,6 +356,12 @@ def main():
             for t in TIERS:
                 na, nb = tt[t]["A"]["visitors"], tt[t]["B"]["visitors"]
                 f.write(f"| {t} | {na} | {nb} | {na + nb} |\n")
+            f.write("\nVisitors by ref with post status (descriptive; statuses from [posts.csv](posts.csv)):\n\n"
+                    "| Ref | Tier | Post status | Version A | Version B | Total |\n|---|---|---|---:|---:|---:|\n")
+            for ref, t, st, na, nb in status_rows:
+                f.write(f"| {ref} | {t} | {st} | {na} | {nb} | {na + nb} |\n")
+            f.write(f"\n{live_line.replace('DESCRIPTIVE ONLY: t', 'Descriptive: T')}.\n\n"
+                    f"{' '.join(heard_line.replace('DESCRIPTIVE ONLY: a', 'Descriptive: A').split())}\n")
             f.write("\n```\n" + "\n".join(out[:-3]) + "\n```\n")
         print(f"\nWrote {RESULTS_MD}")
 
