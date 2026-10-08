@@ -107,7 +107,7 @@ California college students only: most who qualify for CalFresh never apply. Fre
 
 ## Log
 
-The post log is [`posts.csv`](posts.csv): one row per post with `date,subreddit,ref,status,notes`, where status is `live`, `removed`, or `planned`. Add a row when you plan a post and update its status the same day it goes up or comes down. `analysis.py` reads it and reports visitors per ref with each post's status.
+The post log is [`posts.csv`](posts.csv): one row per post with `date,subreddit,ref,status,notes`, where status is `live`, `removed`, `planned`, or `pending` (submitted but held for moderator review). Add a row when you plan a post and update its status the same day it goes up or comes down. `analysis.py` reads it and reports visitors per ref with each post's status.
 
 ## Counting reach for your essay
 
