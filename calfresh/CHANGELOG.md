@@ -2,6 +2,15 @@
 
 Every change to the page, the method, or the data after the preregistration commit is recorded here, newest first. Each entry gives the date, what changed, why, and any data affected.
 
+## 2026-10-07
+
+Before any posts to these communities. Logged as a deviation in `experiment/PREREGISTRATION.md`.
+
+- **Ref tags added.** `experiment/refs.csv` gains r-csus, r-davis, r-roseville, r-elkgrove, r-stockton (local) and r-ucsb, r-ucr, r-ucsc, r-sjsu, r-sdsu, r-csulb, r-calpoly (statewide), in the existing tiers. Tier definitions, the primary analysis, and the Oct 25 national-posting rule are unchanged. The page needed no change: it already accepts any tag of 1 to 30 characters of a-z, 0-9, or hyphens, and records anything else as `direct`.
+- **Post log.** `experiment/posts.csv` records each post's date, subreddit, ref, and status (live, removed, planned). It replaces the table in `experiment/LAUNCH.md`.
+- **Analysis (descriptive additions only).** `analysis.py` now reports visitors per ref with each ref's post status, total visitors from live posts, and the counts of `heard-yes` and `heard-no` answers (`--from-export` now also writes `experiment/heard.csv`). These answer events carry no ref tag, so the counts cover all traffic and cannot be limited to the local and statewide tiers. The primary analysis is unchanged.
+- **Launch plan.** `experiment/LAUNCH.md` lists the Oct 8 campus posts (r/berkeley, r/UCSD, r/ucla, r/UCSantaBarbara) and optional later city subreddits (r/Roseville, r/ElkGrove, r/Stockton, r/Davis).
+
 ## 2026-10-06
 
 Before any public posts. Logged as a deviation in `experiment/PREREGISTRATION.md`.
