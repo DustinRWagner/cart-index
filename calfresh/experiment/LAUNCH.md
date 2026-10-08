@@ -34,6 +34,24 @@ Fit is about the readers, not the size. Membership sizes and rules change, so ch
 | r/UCI | https://folsomcartindex.com/calfresh/?ref=r-uci |
 | r/ucla | https://folsomcartindex.com/calfresh/?ref=r-ucla |
 
+**Oct 8 posts** (campus subreddits, statewide tier):
+
+| Subreddit | Link |
+|---|---|
+| r/berkeley | https://folsomcartindex.com/calfresh/?ref=r-berkeley |
+| r/UCSD | https://folsomcartindex.com/calfresh/?ref=r-ucsd |
+| r/ucla | https://folsomcartindex.com/calfresh/?ref=r-ucla |
+| r/UCSantaBarbara | https://folsomcartindex.com/calfresh/?ref=r-ucsb |
+
+**Later, optional (city subs; expect low volume)** (local tier):
+
+| Subreddit | Link |
+|---|---|
+| r/Roseville | https://folsomcartindex.com/calfresh/?ref=r-roseville |
+| r/ElkGrove | https://folsomcartindex.com/calfresh/?ref=r-elkgrove |
+| r/Stockton | https://folsomcartindex.com/calfresh/?ref=r-stockton |
+| r/Davis | https://folsomcartindex.com/calfresh/?ref=r-davis |
+
 **Tier 3, national. Only under the Oct 25 rule below.**
 
 | Subreddit | Link |
@@ -56,7 +74,7 @@ Fit is about the readers, not the size. Membership sizes and rules change, so ch
 - **Never use alternate accounts or ask for upvotes.**
 - If anyone asks why the page differs from what a friend saw: **"It randomly shows one of two layouts to learn which is clearer."**
 - The post copy below deliberately never mentions $306 or carts. Keep it that way in comments too, so readers see their own version first.
-- Record each post in the log below the same day.
+- Record each post in [`posts.csv`](posts.csv) the same day.
 
 ## Message to moderators (draft)
 
@@ -89,13 +107,10 @@ California college students only: most who qualify for CalFresh never apply. Fre
 
 ## Log
 
-"Readers" = visitors recorded for that `ref` (the `exp/A/view/<ref>` plus `exp/B/view/<ref>` events in GoatCounter, or the by-referrer table from `analysis.py`). Fill this in when the window closes.
-
-| Date posted | Subreddit | Link (ref) | Mods messaged | Approved / removed | Readers (to Nov 8) |
-|---|---|---|---|---|---|
-| | | | | | |
+The post log is [`posts.csv`](posts.csv): one row per post with `date,subreddit,ref,status,notes`, where status is `live`, `removed`, or `planned`. Add a row when you plan a post and update its status the same day it goes up or comes down. `analysis.py` reads it and reports visitors per ref with each post's status.
 
 ## Counting reach for your essay
 
-- **Subreddits shared on** = rows above marked "approved" (posts that stayed up). Don't count posts that were removed.
+- **Subreddits shared on** = rows in `posts.csv` marked `live` (posts that stayed up). Don't count posts that were removed.
+- **Readers from live posts** = the "total visitors from live posts" line printed by `python3 analysis.py`.
 - **Readers in the first [period]** = sum of `visitors` in `results.csv` from your first post date through the end of that period. These are unique browsers that loaded the page, after bots, test visits, and your own visits are excluded. Run `python3 analysis.py` after importing the GoatCounter export to get the totals.
