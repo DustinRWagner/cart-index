@@ -52,6 +52,16 @@ Fit is about the readers, not the size. Membership sizes and rules change, so ch
 | r/Stockton | https://folsomcartindex.com/calfresh/?ref=r-stockton |
 | r/Davis | https://folsomcartindex.com/calfresh/?ref=r-davis |
 
+**Statewide city subs, added Oct 8** (statewide tier; logged as the Oct 8 deviation):
+
+| Subreddit | Link |
+|---|---|
+| r/California | https://folsomcartindex.com/calfresh/?ref=r-california |
+| r/LosAngeles | https://folsomcartindex.com/calfresh/?ref=r-losangeles |
+| r/bayarea | https://folsomcartindex.com/calfresh/?ref=r-bayarea |
+| r/sanfrancisco | https://folsomcartindex.com/calfresh/?ref=r-sanfrancisco |
+| r/sandiego | https://folsomcartindex.com/calfresh/?ref=r-sandiego |
+
 **Tier 3, national. Only under the Oct 25 rule below.**
 
 | Subreddit | Link |
