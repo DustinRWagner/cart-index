@@ -2,6 +2,13 @@
 
 Every change to the page, the method, or the data after the preregistration commit is recorded here, newest first. Each entry gives the date, what changed, why, and any data affected.
 
+## 2026-10-08
+
+Logged as a deviation in `experiment/PREREGISTRATION.md`.
+
+- **Ref tags added.** `experiment/refs.csv` gains r-losangeles, r-bayarea, r-sanfrancisco, r-sandiego (statewide). r-california was already listed and is unchanged. Reason: campus posts were removed or held by moderators, and these subreddits add California traffic before the fixed November 8 close. Tier definitions, the data window, the stopping rule, randomization, and the primary analysis are unchanged. The page needed no change: each tag passes its 1-to-30-character a-z, 0-9, hyphen check.
+- **Post log.** `experiment/posts.csv`: r/berkeley is now `removed`; r/ucla and r/UCSantaBarbara are `pending` (filtered for moderator review at submission). `pending` is a new allowed status in `analysis.py` and `experiment/LAUNCH.md`; it only affects the descriptive post-status report.
+
 ## 2026-10-07
 
 Before any posts to these communities. Logged as a deviation in `experiment/PREREGISTRATION.md`.

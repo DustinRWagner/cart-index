@@ -32,7 +32,7 @@ REFS = os.path.join(HERE, "refs.csv")
 POSTS = os.path.join(HERE, "posts.csv")
 HEARD = os.path.join(HERE, "heard.csv")
 HEARD_FIELDS = ["date", "answer", "count"]
-POST_STATUSES = ("live", "removed", "planned")
+POST_STATUSES = ("live", "removed", "planned", "pending")
 FIELDS = ["date", "version", "visitors", "apply_clicks", "help_clicks", "any_click", "ref"]
 
 PACIFIC = ZoneInfo("America/Los_Angeles")
