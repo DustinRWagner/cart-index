@@ -2,6 +2,12 @@
 
 Every change to the page, the method, or the data after the preregistration commit is recorded here, newest first. Each entry gives the date, what changed, why, and any data affected.
 
+## 2026-10-10
+
+Logged as a deviation in `experiment/PREREGISTRATION.md`.
+
+- **Interim counts viewed.** The author viewed interim outcome counts on October 10. No change was made to the design, posting plan, data window, or analysis as a result.
+
 ## 2026-10-08
 
 Logged as a deviation in `experiment/PREREGISTRATION.md`.
