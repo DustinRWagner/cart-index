@@ -17,10 +17,10 @@ Fit is about the readers, not the size. Membership sizes and rules change, so ch
 
 | Subreddit | Link |
 |---|---|
-| r/UCLA | https://folsomcartindex.com/calfresh/?ref=r-ucla |
+| r/ucla | https://folsomcartindex.com/calfresh/?ref=r-ucla |
 | r/Sacramento | https://folsomcartindex.com/calfresh/?ref=r-sacramento |
-| r/ucsb | https://folsomcartindex.com/calfresh/?ref=r-ucsb |
-| r/ucdavis | https://folsomcartindex.com/calfresh/?ref=r-ucdavis |
+| r/UCSantaBarbara | https://folsomcartindex.com/calfresh/?ref=r-ucsb |
+| r/UCDavis | https://folsomcartindex.com/calfresh/?ref=r-ucdavis |
 | r/UCSD | https://folsomcartindex.com/calfresh/?ref=r-ucsd |
 
 **Candidates** (statewide tier):
