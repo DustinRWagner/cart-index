@@ -13,60 +13,33 @@ You post everything yourself. Nothing here is automated. Post no earlier than **
 
 Fit is about the readers, not the size. Membership sizes and rules change, so check each one yourself before posting. Every tag below is already in [`refs.csv`](refs.csv), which assigns its audience tier for the analysis.
 
-**Tier 1, local. Post these first, one or two per day.**
+**Posted (posts up as of Oct 22, 2026).** Each post's status is tracked in [`posts.csv`](posts.csv).
 
 | Subreddit | Link |
 |---|---|
-| r/folsom | https://folsomcartindex.com/calfresh/?ref=r-folsom |
+| r/ucla | https://folsomcartindex.com/calfresh/?ref=r-ucla |
 | r/Sacramento | https://folsomcartindex.com/calfresh/?ref=r-sacramento |
-| r/SacState | https://folsomcartindex.com/calfresh/?ref=r-sacstate |
-| r/UCDavis | https://folsomcartindex.com/calfresh/?ref=r-ucdavis |
-| An FLC or Los Rios subreddit, if one exists and is active (check first) | https://folsomcartindex.com/calfresh/?ref=r-flc |
-
-**Tier 2, statewide. Post after Tier 1 is done.**
-
-| Subreddit | Link |
-|---|---|
-| r/California | https://folsomcartindex.com/calfresh/?ref=r-california |
-| r/CalFresh | https://folsomcartindex.com/calfresh/?ref=r-calfresh |
-| r/berkeley | https://folsomcartindex.com/calfresh/?ref=r-berkeley |
-| r/UCSD | https://folsomcartindex.com/calfresh/?ref=r-ucsd |
-| r/UCI | https://folsomcartindex.com/calfresh/?ref=r-uci |
-| r/ucla | https://folsomcartindex.com/calfresh/?ref=r-ucla |
-
-**Oct 8 posts** (campus subreddits, statewide tier):
-
-| Subreddit | Link |
-|---|---|
-| r/berkeley | https://folsomcartindex.com/calfresh/?ref=r-berkeley |
-| r/UCSD | https://folsomcartindex.com/calfresh/?ref=r-ucsd |
-| r/ucla | https://folsomcartindex.com/calfresh/?ref=r-ucla |
 | r/UCSantaBarbara | https://folsomcartindex.com/calfresh/?ref=r-ucsb |
+| r/UCDavis | https://folsomcartindex.com/calfresh/?ref=r-ucdavis |
+| r/UCSD | https://folsomcartindex.com/calfresh/?ref=r-ucsd |
 
-**Later, optional (city subs; expect low volume)** (local tier):
-
-| Subreddit | Link |
-|---|---|
-| r/Roseville | https://folsomcartindex.com/calfresh/?ref=r-roseville |
-| r/ElkGrove | https://folsomcartindex.com/calfresh/?ref=r-elkgrove |
-| r/Stockton | https://folsomcartindex.com/calfresh/?ref=r-stockton |
-| r/Davis | https://folsomcartindex.com/calfresh/?ref=r-davis |
-
-**Statewide city subs, added Oct 8** (statewide tier; logged as the Oct 8 deviation):
+**Candidates** (statewide tier):
 
 | Subreddit | Link |
 |---|---|
-| r/California | https://folsomcartindex.com/calfresh/?ref=r-california |
-| r/LosAngeles | https://folsomcartindex.com/calfresh/?ref=r-losangeles |
-| r/bayarea | https://folsomcartindex.com/calfresh/?ref=r-bayarea |
-| r/sanfrancisco | https://folsomcartindex.com/calfresh/?ref=r-sanfrancisco |
-| r/sandiego | https://folsomcartindex.com/calfresh/?ref=r-sandiego |
+| r/sdsu | https://folsomcartindex.com/calfresh/?ref=r-sdsu |
+| r/UCI | https://folsomcartindex.com/calfresh/?ref=r-uci |
+| r/UCSC | https://folsomcartindex.com/calfresh/?ref=r-ucsc |
 
-**Tier 3, national. Only under the Oct 25 rule below.**
+**Candidate, national tier. Only under the Oct 25 rule below.**
 
 | Subreddit | Link |
 |---|---|
-| r/povertyfinance | https://folsomcartindex.com/calfresh/?ref=r-povertyfinance |
+| r/college | https://folsomcartindex.com/calfresh/?ref=r-college |
+
+r/college has a national audience: most readers are not enrolled in California and cannot convert, so expect a lower click rate in both arms. Its ref stays distinct so it can be dropped in the California-only sensitivity check.
+
+Removed from candidate list 2026-10-22: r/folsom, r/SacState, an FLC or Los Rios subreddit, r/berkeley, r/California, r/CalFresh, r/Roseville, r/ElkGrove, r/Stockton, r/Davis, r/LosAngeles, r/bayarea, r/sanfrancisco, r/sandiego, r/povertyfinance.
 
 **The Oct 25 rule (preregistered as a deviation on Oct 6, 2026):** on October 25, 2026, run `python3 analysis.py` after importing the GoatCounter export. Post to Tier 3 only if **fewer than 300 visitors per version** have been recorded. Look only at the visitor counts, not the click rates. If both versions already have 300 or more, do not post to Tier 3.
 
