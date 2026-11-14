@@ -2,6 +2,16 @@
 
 Every change to the page, the method, or the data after the preregistration commit is recorded here, newest first. Each entry gives the date, what changed, why, and any data affected.
 
+## 2026-11-14
+
+The experiment's data window closed November 8, 2026. These changes come after it and do not affect its data.
+
+- **Random assignment removed.** Every visitor now sees the dollar version (version A). The grocery version, the `?arm=` test override, the `?ref=` tag storage, and the `exp/...` events are gone from the page. The page as it ran from October 6 to November 8 is kept unchanged in `experiment/page-as-run.html.txt` (a text file, so it is not served as a page and sends no events). The preregistration, launch kit, analysis script, and data files are unchanged.
+- **New event names.** Apply and help links keep the same destinations and now send `calfresh/apply` or `calfresh/help`, once per click. The awareness question stays and sends `calfresh/heard-yes` or `calfresh/heard-no`, once per browser. None of these names start with `exp/` or match the experiment's `heard-yes` / `heard-no`, so `analysis.py` ignores them.
+- **Cart calculator added** under the $306 figure: any monthly amount (default $306) shown as carts of the 14 Cart Index staples at Walmart, Target, Safeway, and their average, from the latest complete official week in `data/prices.csv`, rounded to one decimal. First change of the amount sends `calfresh/calc`, once per browser.
+- **Search indexing allowed.** The `noindex` tag is removed.
+- **Footer.** "About the two versions" is replaced by a short note on the test and a link to the preregistration.
+
 ## 2026-10-10
 
 Logged as a deviation in `experiment/PREREGISTRATION.md`.
