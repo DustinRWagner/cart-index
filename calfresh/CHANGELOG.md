@@ -2,6 +2,11 @@
 
 Every change to the page, the method, or the data after the preregistration commit is recorded here, newest first. Each entry gives the date, what changed, why, and any data affected.
 
+## 2026-11-15
+
+- **Awareness question removed.** "Before today, had you heard about this change?" is gone from the page, with its `calfresh/heard-yes` / `calfresh/heard-no` events and its `calfresh_heard` flag. It belonged to the experiment and made the page busier.
+- **Linked from the homepage.** The Cart Index homepage now has a button to the guide.
+
 ## 2026-11-14
 
 The experiment's data window closed November 8, 2026. These changes come after it and do not affect its data.
