@@ -108,6 +108,18 @@
   body.prelaunch .chart-box, body.prelaunch .ticker, body.prelaunch .chart-controls,
   body.prelaunch #carts, body.prelaunch #shelf{display:none;}
 
+  /* CalFresh guide button (same style as the guide's buttons) */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; text-align:center;
+    min-height:56px; padding:10px 20px; margin-top:28px;
+    font-family:var(--font-display); font-weight:400; font-size:20px; line-height:1.05;
+    text-transform:uppercase; letter-spacing:.01em; text-decoration:none; color:var(--ink);
+    background:var(--yellow); border:var(--rule); box-shadow:5px 5px 0 var(--ink);
+    transition:transform .06s ease, box-shadow .06s ease;
+  }
+  .btn:hover{background:#ffdc63;}
+  .btn:active{transform:translate(3px,3px); box-shadow:2px 2px 0 var(--ink);}
+
   /* ---------- receipt (signature) ---------- */
   .receipt-slot{display:flex; justify-content:center;}
   .receipt{
@@ -246,7 +258,19 @@
     padding:16px 18px; max-width:76ch; background:var(--receipt);
   }
 
-  .method-faq{margin-top:56px; padding-top:32px; border-top:var(--rule); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:36px 48px; max-width:1000px;}
+  .method-short{grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px; max-width:none;}
+  .method-short .m-step h3{margin-bottom:4px;}
+  .method-short .lead{font-weight:400; font-size:15px;}
+  .method-full .m-step h3{margin-top:0;}
+  @media (max-width:900px){ .method-short{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media (max-width:520px){ .method-short{grid-template-columns:minmax(0,1fr);} }
+  .more-method{margin-top:40px; border-top:var(--rule); padding-top:18px;}
+  .more-method > summary{cursor:pointer; list-style:none; font-family:var(--font-mono); font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;}
+  .more-method > summary::-webkit-details-marker{display:none;}
+  .more-method > summary::before{content:"\25B8 ";}
+  .more-method[open] > summary::before{content:"\25BE ";}
+  .more-method .method{margin-top:28px;}
+  .method-faq{margin-top:40px; padding-top:32px; border-top:var(--rule); display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:36px 48px; max-width:1000px;}
   .method-faq h3{font-size:18px; font-weight:800; margin-bottom:8px;}
   .method-faq p, .method-faq li{font-size:15px; line-height:1.65; color:#2a2823; max-width:65ch;}
   .method-faq p + p{margin-top:10px;}
@@ -293,6 +317,7 @@
     .ticker-track{animation:none;}
     html{scroll-behavior:auto;}
     .bar-fill{transition:none;}
+    .btn{transition:none;}
   }
 </style>
 
@@ -315,7 +340,7 @@
     <div>
       <span class="eyebrow">A weekly grocery price index · Folsom, California</span>
       <h1 class="title">The Cart<br>Index</h1>
-      <p class="dek">Every Monday morning, one economics student records what the <strong>same fixed basket</strong> costs at <strong>three Folsom grocery stores</strong> (Walmart, Target, and Safeway), item by item, straight from each retailer's own published store prices. National CPI tells you what food costs on average, months later. This tells you what it costs <strong>here, this week</strong>. Measured, not estimated.</p>
+      <p class="dek">The <strong>same 14 groceries</strong>, priced every Monday at <strong>Walmart, Target, and Safeway</strong> in Folsom.</p>
       <div class="hero-number">
         <div class="index-price" aria-label="Current index value">
           <span class="whole" id="idx-whole">—</span><span class="cents" id="idx-dec">·—</span>
@@ -325,6 +350,7 @@
           <span class="base-note" id="base-note">Base week = 100</span>
         </div>
       </div>
+      <a class="btn" href="calfresh/">College student? See if you qualify for CalFresh &rarr;</a><br>
       <span class="prelaunch-badge">Pilot phase complete (Jul 6 – Aug 17). The official index publishes its first reading Monday, Aug 24, 2026.</span>
     </div>
     <div class="receipt-slot">
@@ -362,7 +388,7 @@
   <div class="wrap">
     <p class="kicker">01 · The number</p>
     <h2 class="sec">Grocery inflation, measured on foot</h2>
-    <p class="sec-dek">The index is a weighted average of price changes across five food categories, benchmarked to the first week of the official series (= 100). Weights are fixed, BLS-style food-at-home category weights, published in the page source, so a move in this line means the same thing a CPI move does, just for Folsom, and weekly instead of monthly.</p>
+    <p class="sec-dek">How grocery prices have moved since the first official week (= 100).</p>
 
     <div class="stats" id="stats">
       <div class="stat"><b id="s-weeks">—</b><span>weeks in official series</span></div>
@@ -376,7 +402,7 @@
       <button class="tag-btn" id="btn-composite" aria-pressed="false">Composite index</button>
     </div>
     <div class="chart-box"><canvas id="chart" height="380" aria-label="Line chart of the Cart Index over time" role="img"></canvas></div>
-    <p class="chart-note">The official series begins <strong>Aug 24, 2026</strong> (= 100). The seven weeks of Jul 6 – Aug 17 were a pilot used to finalize the collection protocol; pilot observations are published in the raw CSV, flagged <code>pilot</code>, and excluded from the index. Details are in the <a href="#revisions">revision log</a>.</p>
+    <p class="chart-note">Starts Aug 24, 2026 (= 100). Earlier pilot weeks are in the CSV but not the index. See the <a href="#revisions">revision log</a>.</p>
   </div>
 </section>
 
@@ -384,12 +410,12 @@
   <div class="wrap">
     <p class="kicker">02 · The spread</p>
     <h2 class="sec">The cheapest full cart</h2>
-    <p class="sec-dek" id="cart-dek">The exact same basket, rung up at each store this week. The gap between the cheapest and priciest cart is real money a family keeps by driving five extra minutes.</p>
+    <p class="sec-dek" id="cart-dek">The same basket at each store this week.</p>
     <div class="cart-bars" id="cart-bars"></div>
 
     <div class="calc">
       <h3>What the spread is worth to you</h3>
-      <p class="small">Based on this week's percentage gap between the priciest and cheapest cart, applied to your own grocery budget.</p>
+      <p class="small">This week's gap between the priciest and cheapest cart, applied to your budget.</p>
       <div class="calc-row">
         <div>
           <label for="spend">Your weekly grocery spend: <span id="spend-label">$150</span></label>
@@ -409,7 +435,7 @@
   <div class="wrap">
     <p class="kicker">03 · The shelf</p>
     <h2 class="sec">On the shelf this week</h2>
-    <p class="sec-dek">Average listed price across all tracked stores for each basket item, with the week-over-week move. These are the prices each retailer publishes for its Folsom store.</p>
+    <p class="sec-dek">Average price across the three stores, and the change from last week.</p>
     <div class="shelf" id="shelf-grid"></div>
   </div>
 </section>
@@ -418,32 +444,42 @@
   <div class="wrap">
     <p class="kicker">04 · The method</p>
     <h2 class="sec">How it's measured</h2>
-    <div class="method">
-      <div class="m-step"><div class="num">1</div><h3>Fixed basket</h3>
-        <p class="lead">The same named products, at the same stores, every week.</p>
+    <div class="method method-short">
+      <div class="m-step"><div class="num">1</div><h3>Same basket</h3>
+        <p class="lead">Same products, same stores, every week.</p></div>
+      <div class="m-step"><div class="num">2</div><h3>Collected by hand</h3>
+        <p class="lead">Every Monday morning, from each store's own website.</p></div>
+      <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3>
+        <p class="lead">Five food groups, weighted the way the official CPI weights them.</p></div>
+      <div class="m-step"><div class="num">4</div><h3>Published open</h3>
+        <p class="lead">Every price is in a <a data-link="csv" href="#">public CSV</a>.</p></div>
+    </div>
+    <details class="more-method" id="method-details">
+      <summary>More on the method</summary>
+    <div class="method method-full">
+      <div class="m-step"><h3>Fixed basket</h3>
         <ul>
           <li>Each item is defined by a written specification (brand tier, cut, package size, and price type), so every observation is like-for-like.</li>
           <li>Out-of-stock items carry the prior week's price forward (standard index imputation) and are never substituted.</li>
           <li>Full specifications are in the <a data-link="readme" href="#">README</a>.</li>
         </ul>
       </div>
-      <div class="m-step"><div class="num">2</div><h3>Collected consistently</h3>
-        <p class="lead">Recorded by hand every Monday morning from each retailer's own website, with the exact Folsom store location selected.</p>
+      <div class="m-step"><h3>Collected consistently</h3>
         <ul>
+          <li>Recorded by hand every Monday morning from each retailer's own website, with the exact Folsom store location selected.</li>
           <li>All 42 prices (14 items × 3 stores) are taken exactly as displayed for that store, in the same fixed order every week, and published the same day. No scraping and no estimates.</li>
           <li>Free loyalty pricing counts where a retailer shows it by default (Safeway for U); Target displays its base price.</li>
           <li>Clip-to-activate coupons and paid memberships are never used.</li>
         </ul>
       </div>
-      <div class="m-step"><div class="num">3</div><h3>Weighted like the CPI</h3>
-        <p class="lead">Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index).</p>
+      <div class="m-step"><h3>Weighted like the CPI</h3>
         <ul>
+          <li>Category price relatives are combined with BLS-style food-at-home weights (a Laspeyres index).</li>
           <li>The composite behaves like a true price index rather than a raw price average.</li>
           <li>The weights sit in the site's configuration block, so anyone can inspect them or change them in a fork.</li>
         </ul>
       </div>
-      <div class="m-step"><div class="num">4</div><h3>Published open</h3>
-        <p class="lead">Every observation lives in a <a data-link="csv" href="#">public CSV on GitHub</a>.</p>
+      <div class="m-step"><h3>Published open</h3>
         <ul>
           <li>Since Sept 28, 2026, a dated screenshot of every listing is published the same day in <a data-link="listings" href="#"><code>archive/listings/</code></a>, so any price can be checked against the page it came from. The five official weeks before that (Aug 24 through Sept 21) have no captures.</li>
           <li>Anyone can audit the math or rebuild the index.</li>
@@ -467,6 +503,7 @@
         </ul>
       </div>
     </div>
+    </details>
     <details class="method-note revision-log" id="revisions">
       <summary><strong>REVISION LOG</strong> · 5 entries</summary>
       <p><span class="rev-head"><span class="rev-date">2026-10-01</span> <strong>Correction: Safeway cheddar, week of Sept 28, 2026, $4.19 &rarr; $4.99.</strong></span>
@@ -505,7 +542,7 @@
       The pilot panel also included Bel Air, removed to avoid a potential conflict of interest for the author (see the <a data-link="readme" href="#">README</a>);
       its 98 pilot observations remain published at <a data-link="archiveCsv" href="#"><code>archive/belair.csv</code></a>.</p>
     </details>
-    <p class="method-note">This is an independent student research project. It is not affiliated with, endorsed by, or informed by any retailer's internal data. Every price is the retailer's own publicly listed price for its named Folsom store. Store names can be anonymized on request.</p>
+    <p class="chart-note">Independent student project. Not affiliated with any store. Every price is the store's own public price for Folsom.</p>
   </div>
 </section>
 
@@ -513,12 +550,12 @@
   <div class="wrap">
     <div>
       <h4>The Cart Index</h4>
-      <p>Built and maintained by Dustin Wagner, economics student at Folsom Lake College. Started as a question I kept asking while bagging groceries: <em>"how much did all of this cost last month?"</em> Now I measure it.</p>
-      <p class="sig">Contact / collaborate → <a data-link="mailto" href="#">email me</a> or <a data-link="issues" href="#">open an issue on GitHub</a><br>Want this for your city? <a data-link="fork" href="#">Fork the repo</a>. The whole thing is one HTML file and one CSV.</p>
+      <p>By Dustin Wagner, economics student at Folsom Lake College.</p>
+      <p class="sig"><a data-link="mailto" href="#">Email me</a> · <a data-link="issues" href="#">Open an issue</a> · <a data-link="fork" href="#">Fork it for your city</a></p>
     </div>
     <div>
       <h4>The data</h4>
-      <p class="sig">Schema: <code>date, store, item, category, unit, price, phase, item_id</code><br>Collected weekly since Jul 6, 2026 · Updated every Monday · <a data-link="csv" href="#">Download the CSV</a> · <a data-link="repo" data-link-text="repoShort" href="#">github.com/…/cart-index</a><br>Benchmark: <a data-link="bls" href="#">BLS CPI, food at home, West region</a> (monthly). BLS publishes no Sacramento-area CPI. Beginning October 2026 it will collect price data in the Sacramento region for the first time since 2018, but those observations feed national and regional aggregates rather than a published local index. That gap is the reason this index exists.</p>
+      <p class="sig">Updated every Monday · <a data-link="csv" href="#">Download the CSV</a> · <a data-link="repo" data-link-text="repoShort" href="#">github.com/…/cart-index</a><br>Benchmark: <a data-link="bls" href="#">BLS CPI, food at home, West region</a>. There is no official Sacramento-area index, which is why this one exists.</p>
     </div>
   </div>
 </footer>
@@ -682,7 +719,7 @@ function render(D){
   $("ticker-track").innerHTML = tick + tick; // duplicate for seamless loop
 
   // cart bars
-  $("cart-dek").innerHTML = `The exact same ${D.items.length}-item basket, rung up at each store during the week of ${fmtWeek(wLast)}. The gap between the cheapest and priciest cart, <strong>${money(max.t-min.t)} this week</strong>, is real money a family keeps by driving five extra minutes.`;
+  $("cart-dek").innerHTML = `The same ${D.items.length}-item basket at each store, week of ${fmtWeek(wLast)}. Cheapest vs. priciest: <strong>${money(max.t-min.t)}</strong>.`;
   $("cart-bars").innerHTML = totals.map((x,i)=>{
     const wPct = (x.t/max.t*100).toFixed(1);
     const [name, loc] = x.s.split(" - ");
