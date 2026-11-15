@@ -36,8 +36,8 @@ From October 2 to November 8, 2026, each visitor was randomly shown one of two v
 
 - No cookies, no sign-in, no forms, and no personal information.
 - The only analytics are [GoatCounter](https://www.goatcounter.com/), which counts page views and named events without storing personal data.
-- The browser's `localStorage` keeps two small flags on the reader's own device, so the awareness answer and the calculator are counted only once (`calfresh_heard`, `calfresh_calc`). They never leave the device.
-- Events: `calfresh/apply` and `calfresh/help` (one per click on Apply or a help link), `calfresh/heard-yes` or `calfresh/heard-no` (once per browser), and `calfresh/calc` (once per browser, the first time the calculator amount is changed). The experiment's event names (`exp/...`, `heard-yes`, `heard-no`) are no longer sent, so new data cannot mix with the experiment's data.
+- The browser's `localStorage` keeps one small flag on the reader's own device (`calfresh_calc`), so calculator use is counted only once. It never leaves the device.
+- Events: `calfresh/apply` and `calfresh/help` (one per click on Apply or a help link), and `calfresh/calc` (once per browser, the first time the calculator amount is changed). The experiment's event names (`exp/...`, `heard-yes`, `heard-no`) are no longer sent, so new data cannot mix with the experiment's data.
 
 ## Reproduce the experiment analysis
 
@@ -55,6 +55,7 @@ From October 2 to November 8, 2026, each visitor was randomly shown one of two v
 
 The detailed log is in [CHANGELOG.md](CHANGELOG.md).
 
+- **2026-11-15:** Awareness question removed. Homepage now links to the guide.
 - **2026-11-14:** Experiment ended. Every visitor sees the dollar version; random assignment removed; cart calculator added; new `calfresh/` event names; `noindex` removed.
 - **2026-10-01:** Corrected the Sept 28 Safeway cheddar price in the index data ($4.19 → $4.99); the grocery translation is now 5 carts with $25 to spare (was $26).
 - **2026-10-01:** Experiment rebuilt and preregistered before launch: grocery version computed from the index, `?arm=` and `?ref=` added, Google Forms check-in removed, CDSS and statewide help links added, analysis script and launch kit added. Replaces the September 21 plan, which was never launched.
